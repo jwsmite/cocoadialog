@@ -172,7 +172,10 @@
     }
 }
 
+
 #pragma mark - Public chainable methods
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wimplicit-retain-self"
 - (CDOption *(^)(NSString *)) addNote {
     return ^CDOption *(NSString *note){
         [self.notes addObject:note];
@@ -291,6 +294,8 @@
         return self;
     };
 }
+
+#pragma clang diagnostic pop
 
 #pragma mark - Properties
 - (NSArray *) arrayValue {

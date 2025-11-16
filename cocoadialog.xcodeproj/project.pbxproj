@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4EE1322C2ECA8EBF00E35483 /* CDForm.h in Headers */ = {isa = PBXBuildFile; fileRef = 4EE1322A2ECA8EBF00E35483 /* CDForm.h */; };
+		4EE1322D2ECA8EBF00E35483 /* CDForm.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EE1322B2ECA8EBF00E35483 /* CDForm.m */; };
 		A71EC8C11F88B0E500DB31D8 /* Locale.plist in Resources */ = {isa = PBXBuildFile; fileRef = A71EC8C31F88B0E500DB31D8 /* Locale.plist */; };
 		A71EC8C51F88B1A600DB31D8 /* CDLocale.h in Headers */ = {isa = PBXBuildFile; fileRef = A71EC8C41F88B1A600DB31D8 /* CDLocale.h */; };
 		A71EC8C71F88B1CF00DB31D8 /* CDLocale.m in Sources */ = {isa = PBXBuildFile; fileRef = A71EC8C61F88B1CF00DB31D8 /* CDLocale.m */; };
@@ -110,6 +112,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		094301CC6926DA84788890D3 /* Pods-cocoadialog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cocoadialog.release.xcconfig"; path = "Pods/Target Support Files/Pods-cocoadialog/Pods-cocoadialog.release.xcconfig"; sourceTree = "<group>"; };
 		3E30424E25F42D9CE80C4AEF /* test.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = test.js; sourceTree = "<group>"; };
 		3E30437AC7469E138D7B413B /* app.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = app.js; sourceTree = "<group>"; };
 		3E304684D7D50B5C2A230EFD /* xcode.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = xcode.js; sourceTree = "<group>"; };
@@ -122,6 +125,8 @@
 		3E304CDA4338D5CAC6BED0B2 /* build.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = build.js; sourceTree = "<group>"; };
 		3E304D0060FB3255308ACF05 /* fs.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = fs.js; sourceTree = "<group>"; };
 		3E304EAF35BA2AB93C494E2B /* update-version.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "update-version.js"; sourceTree = "<group>"; };
+		4EE1322A2ECA8EBF00E35483 /* CDForm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDForm.h; sourceTree = "<group>"; };
+		4EE1322B2ECA8EBF00E35483 /* CDForm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDForm.m; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* cocoadialog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cocoadialog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A71EC8C21F88B0E500DB31D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Locale.plist; sourceTree = "<group>"; };
 		A71EC8C41F88B1A600DB31D8 /* CDLocale.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDLocale.h; sourceTree = "<group>"; };
@@ -225,6 +230,7 @@
 		A7FC52CB1F8121F900DA9F5E /* CDTextView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CDTextView.xib; sourceTree = "<group>"; };
 		A7FC52CD1F81220F00DA9F5E /* CDTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDTextView.m; sourceTree = "<group>"; };
 		A7FC52CF1F81221900DA9F5E /* CDTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDTextView.h; sourceTree = "<group>"; };
+		C182FE8D76FB47B679DF289F /* Pods-cocoadialog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cocoadialog.debug.xcconfig"; path = "Pods/Target Support Files/Pods-cocoadialog/Pods-cocoadialog.debug.xcconfig"; sourceTree = "<group>"; };
 		E8FDB69E191B5158E1872F21 /* libPods-cocoadialog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cocoadialog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -262,6 +268,8 @@
 		29B97314FDCFA39411CA2CEA /* cocoaDialog */ = {
 			isa = PBXGroup;
 			children = (
+				4EE1322A2ECA8EBF00E35483 /* CDForm.h */,
+				4EE1322B2ECA8EBF00E35483 /* CDForm.m */,
 				A796ED4E1E9B0BD7008EE718 /* .gitignore */,
 				A75155B21F8BBDC100204A88 /* .travis.yml */,
 				A78A8CDE14377610007AE363 /* HISTORY.md */,
@@ -315,6 +323,8 @@
 		3F5B3C182ED05F8713EA5C49 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				C182FE8D76FB47B679DF289F /* Pods-cocoadialog.debug.xcconfig */,
+				094301CC6926DA84788890D3 /* Pods-cocoadialog.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -482,6 +492,7 @@
 				A7EC0C121F7F2CBC00EFF605 /* CDControl.h in Headers */,
 				A7EC0C141F7F2CBC00EFF605 /* CDDialog.h in Headers */,
 				A754FE4F1F89D311008F0BC3 /* CDIcon.h in Headers */,
+				4EE1322C2ECA8EBF00E35483 /* CDForm.h in Headers */,
 				A7EC0C351F7F2CBC00EFF605 /* CDControlView.h in Headers */,
 				A7EC0C1E1F7F2CBC00EFF605 /* CDInputbox.h in Headers */,
 				A7FC52C41F7FB07F00DA9F5E /* CDMatrix.h in Headers */,
@@ -514,8 +525,6 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				26D89003222D31FCB50DE1B8 /* [CP] Embed Pods Frameworks */,
-				0A640141438E7CEEB85FD15A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -551,8 +560,9 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = CD;
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 2610;
 				ORGANIZATIONNAME = cocoadialog;
 				TargetAttributes = {
 					8D1107260486CEB800E47090 = {
@@ -607,41 +617,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0A640141438E7CEEB85FD15A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-cocoadialog/Pods-cocoadialog-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		26D89003222D31FCB50DE1B8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-cocoadialog/Pods-cocoadialog-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GRMustache/GRMustache.framework",
-				"${BUILT_PRODUCTS_DIR}/JRSwizzle/JRSwizzle.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRMustache.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JRSwizzle.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-cocoadialog/Pods-cocoadialog-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		3D80502EC2AC1A018577E7D5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -686,6 +661,7 @@
 				A7EC0C321F7F2CBC00EFF605 /* CDTerminal.m in Sources */,
 				A7EC0C0F1F7F2CBC00EFF605 /* CDCheckbox.m in Sources */,
 				A7EC0C291F7F2CBC00EFF605 /* CDProgressbarInputHandler.m in Sources */,
+				4EE1322D2ECA8EBF00E35483 /* CDForm.m in Sources */,
 				A7EC0C391F7F2CBC00EFF605 /* CDColumns.m in Sources */,
 				A7EC0C271F7F2CBC00EFF605 /* CDProgressbar.m in Sources */,
 				A7D10CCB1F8B031500AA3132 /* NSNumber+CDNumber.m in Sources */,
@@ -770,6 +746,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -786,8 +763,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cocoadialog.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -813,6 +794,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -824,8 +806,12 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cocoadialog.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -845,23 +831,28 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = cocoadialog;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Debug;
 		};
@@ -872,7 +863,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = cocoadialog;
 				CLANG_ENABLE_MODULES = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				DEAD_CODE_STRIPPING = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cocoadialog.app;
 			};
 			name = Debug;
@@ -887,21 +879,26 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = cocoadialog;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 			};
 			name = Release;
 		};
@@ -912,7 +909,8 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = cocoadialog;
 				CLANG_ENABLE_MODULES = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				DEAD_CODE_STRIPPING = YES;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.cocoadialog.app;
 			};
 			name = Release;

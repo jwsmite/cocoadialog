@@ -64,7 +64,7 @@
     float cellWidth = 0.0f;
     for (NSString *item in self.items) {
         NSButton *button = [[NSButton alloc] init];
-        [button setButtonType:NSRadioButton];
+        [button setButtonType:NSButtonTypeRadio];
         button.title = item;
         if (self.disabled != nil && self.disabled.count) {
             if ([self.disabled containsObject:[NSString stringWithFormat:@"%lu", i]]) {

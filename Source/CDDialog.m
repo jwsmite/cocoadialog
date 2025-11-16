@@ -411,7 +411,7 @@
     if (originalSize.width != aSize.width || originalSize.height != aSize.height) {
         NSImage *resizedImage = [[NSImage alloc] initWithSize: aSize];
         [resizedImage lockFocus];
-        [anImage drawInRect:NSMakeRect(0, 0, aSize.width, aSize.height) fromRect:NSMakeRect(0, 0, originalSize.width, originalSize.height) operation:NSCompositeSourceOver fraction:1.0];
+        [anImage drawInRect:NSMakeRect(0, 0, aSize.width, aSize.height) fromRect:NSMakeRect(0, 0, originalSize.width, originalSize.height) operation:NSCompositingOperationSourceOver fraction:1.0];
         [resizedImage unlockFocus];
         anImage = resizedImage;
     }
@@ -590,21 +590,21 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification object:self.panel];
     }
     else {
-        self.panel.styleMask = self.panel.styleMask^NSClosableWindowMask;
+        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskClosable;
     }
 
     // Handle --titlebar-minimize option.
     BOOL minimize = self.options[@"titlebar-minimize"].boolValue;
     [self.panel standardWindowButton:NSWindowMiniaturizeButton].enabled = minimize;
     if (!minimize) {
-        self.panel.styleMask = self.panel.styleMask^NSMiniaturizableWindowMask;
+        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskMiniaturizable;
     }
 
     // Handle --resize and && --titlebar-zoom options.
     BOOL resize = self.options[@"resize"].boolValue;
     [self.panel standardWindowButton:NSWindowZoomButton].enabled = resize && self.options[@"titlebar-zoom"].wasProvided;
     if (!resize) {
-        self.panel.styleMask = self.panel.styleMask^NSResizableWindowMask;
+        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskResizable;
     }
 }
 
@@ -700,8 +700,34 @@
     // Determine the maximum height for the text based on current available width.
     // @see https://stackoverflow.com/a/32171028/1226717
     float width = label.frame.size.width;
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:label];
-    NSTextField *clone = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+
+    NSError *error = nil;
+    NSData *data = nil;
+    NSTextField *clone = nil;
+    
+    if (@available(macOS 10.13, *)) {
+        data = [NSKeyedArchiver archivedDataWithRootObject:label requiringSecureCoding:NO error:&error];
+        if (error) {
+            self.terminal.warning(@"Failed to archive label: %@", error.localizedDescription, nil);
+            return;
+        }
+        clone = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSTextField class] fromData:data error:&error];
+        if (error) {
+            self.terminal.warning(@"Failed to unarchive label: %@", error.localizedDescription, nil);
+            return;
+        }
+    } else {
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        data = [NSKeyedArchiver archivedDataWithRootObject:label];
+        clone = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        #pragma clang diagnostic pop
+    }
+    
+    if (!clone) {
+        return;
+    }
+    
     NSRect rect = {NSZeroPoint, NSMakeSize(width, 0)};
     rect = [clone alignmentRectForFrame:rect];
     clone.preferredMaxLayoutWidth = NSWidth(rect);

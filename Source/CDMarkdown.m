@@ -16,11 +16,17 @@
 - (instancetype) init {
     self = [super init];
     if (self) {
-        _newFontWeights = (&NSFontWeightUltraLight != NULL);
+        if (@available(macOS 10.11, *)) {
+            _newFontWeights = YES;
+            _headerFontWeight = NSFontWeightUltraLight;
+        } else {
+            _newFontWeights = NO;
+            _headerFontWeight = NSFontWeightRegular;
+        }
+        
         _hasLinks = NO;
         _enabled = YES;
         _headerFontSizeMultiplier = 1.5;
-        _headerFontWeight = _newFontWeights ? NSFontWeightUltraLight : NSFontWeightRegular;
         _minimumHeaderFontSize = 18;
         _parser = [TSMarkdownParser standardParser];
     }

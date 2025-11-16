@@ -20,12 +20,12 @@
     options[@"buttons"].require(YES).min(1);
 
     return options.addOptionsToScope([self class].scope,
-  @[
-    CDOption.create(CDString,    @"labels").require(YES).min(1).max(-1),
-    CDOption.create(CDString,    @"values").max(-1),
-    CDOption.create(CDBoolean,   @"secure").max(-1),
-    CDOption.create(CDBoolean,   @"selected"),
-    ]);
+ @[
+   CDOption.create(CDString,    @"labels").require(YES).min(1).max(-1),
+   CDOption.create(CDString,    @"values").max(-1),
+   CDOption.create(CDBoolean,   @"secure").max(-1),
+   CDOption.create(CDBoolean,   @"selected"),
+   ]);
 }
 
 - (BOOL)isReturnValueEmpty {
@@ -112,3 +112,4 @@
 }
 
 @end
+

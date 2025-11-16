@@ -27,17 +27,24 @@
     self.movableByWindowBackground = vibrancy;
 
     if (vibrancy) {
-        self.styleMask = self.styleMask | NSFullSizeContentViewWindowMask;
+        self.styleMask = self.styleMask | NSWindowStyleMaskFullSizeContentView;
         NSVisualEffectView *view = [[NSVisualEffectView alloc] initWithFrame:[self.contentView bounds]];
         [view setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
         [view setBlendingMode:NSVisualEffectBlendingModeBehindWindow];
         [view setState:NSVisualEffectStateActive];
-        [view setMaterial:NSVisualEffectMaterialLight];
+        if (@available(macOS 10.14, *)) {
+            view.material = NSVisualEffectMaterialContentBackground;
+        } else {
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            view.material = NSVisualEffectMaterialLight;
+            #pragma clang diagnostic pop
+        }
         [self.contentView addSubview:view positioned:NSWindowBelow relativeTo:nil];
         self.effectView = view;
     }
     else {
-        self.styleMask = self.styleMask ^ NSFullSizeContentViewWindowMask;
+        self.styleMask = self.styleMask ^ NSWindowStyleMaskFullSizeContentView;
         self.effectView = nil;
     }
 

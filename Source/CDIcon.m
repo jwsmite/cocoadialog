@@ -286,13 +286,16 @@
         }
     }
 
-    // Process bundle image path only if image has not already been set from above
+// Process bundle image path only if image has not already been set from above
     if (!hasImage) {
         if (bundle != nil || path != nil) {
             NSString * fileName = nil;
             if (path == nil) {
                 NSWorkspace *workspace = [NSWorkspace sharedWorkspace];
-                fileName = [[NSBundle bundleWithPath:[workspace absolutePathForAppBundleWithIdentifier:bundle]] pathForResource:value ofType:options[@"icon-type"].stringValue];
+                NSURL *bundleURL = [workspace URLForApplicationWithBundleIdentifier:bundle];
+                if (bundleURL) {
+                    fileName = [[NSBundle bundleWithURL:bundleURL] pathForResource:value ofType:options[@"icon-type"].stringValue];
+                }
             }
             else {
                 fileName = [[NSBundle bundleWithPath:path] pathForResource:value ofType:options[@"icon-type"].stringValue];

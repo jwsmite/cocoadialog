@@ -88,10 +88,13 @@
     }
 }
 
-- (BOOL)panel:(id)sender shouldShowFilename:(NSString *)filename {
+// Modern delegate method (replaces deprecated panel:shouldShowFilename:)
+- (BOOL)panel:(id)sender shouldEnableURL:(NSURL *)url {
+    NSString *filename = url.path;
     BOOL packageAsDir = self.options[@"packages‑as‑directories"].boolValue;
     BOOL isPackage = [[NSWorkspace sharedWorkspace] isFilePackageAtPath:filename];
     BOOL isDir;
+
     // Allow directories and/or packages to be selectable
     if ([[NSFileManager defaultManager] fileExistsAtPath:filename isDirectory:&isDir] && isDir) {
         // Filename is package
@@ -115,5 +118,5 @@
     }
 }
 
-
 @end
+

@@ -63,17 +63,17 @@
     id obj;
     while (obj = [en nextObject]) {
         NSButton * button = [[NSButton alloc] init];
-        [button setButtonType:NSSwitchButton];
+        [button setButtonType:NSButtonTypeSwitch];
         button.title = self.items[currItem];
         if (self.checked.count) {
             if ([self.checked containsObject:[NSString stringWithFormat:@"%lu", currItem]]) {
-                button.cell.state = NSOnState;
+                button.cell.state = NSControlStateValueOn;
             }
         }
         if (self.mixed.count) {
             if ([self.mixed containsObject:[NSString stringWithFormat:@"%lu", currItem]]) {
                 [button.cell setAllowsMixedState:YES];
-                button.cell.state = NSMixedState;
+                button.cell.state = NSControlStateValueMixed;
             }
         }
         if (self.disabled.count) {
@@ -107,9 +107,9 @@
             while (obj = [en nextObject]) {
                 state = [obj state];
                 switch (state) {
-                    case NSOffState: [checkboxesArray addObject: @"off"]; break;
-                    case NSOnState: [checkboxesArray addObject: @"on"]; break;
-                    case NSMixedState: [checkboxesArray addObject: @"mixed"]; break;
+                    case NSControlStateValueOff: [checkboxesArray addObject: @"off"]; break;
+                    case NSControlStateValueOn: [checkboxesArray addObject: @"on"]; break;
+                    case NSControlStateValueMixed: [checkboxesArray addObject: @"mixed"]; break;
                 }
             }
         }
@@ -132,7 +132,7 @@
         BOOL hasChecked = NO;
         id obj;
         while (obj = [en nextObject]) {
-            if ([obj state] == NSOnState){
+            if ([obj state] == NSControlStateValueOn){
                 hasChecked = YES;
                 break;
             }

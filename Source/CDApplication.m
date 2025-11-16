@@ -18,6 +18,7 @@
 #import "CDSlider.h"
 #import "CDTextbox.h"
 #import "CDUsage.h"
+#import "CDForm.h"
 
 @implementation CDApplication
 
@@ -64,6 +65,7 @@
              @"dropdown",
              @"input",
              @"msgbox",
+             @"form",
              @"radio",
              @"progressbar",
              @"slider",
@@ -147,7 +149,16 @@
         self.terminal.error(@"Unknown control: %@\n", controlName.doubleQuote, nil).exit(CDTerminalExitCodeControlUnknown);
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    if (@available(macOS 11.0, *)) {
+        // On macOS 11+, we should use UserNotifications framework
+        // For now, we'll just skip setting up notifications on newer systems
+        // TODO: Implement UserNotifications framework support
+    } else {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+    }
+#pragma clang diagnostic pop
 
     self.terminal.verbose(@"Initiating control: %@", self.control.name.doubleQuote, nil);
 
@@ -295,6 +306,7 @@
              @"save": [CDFileSave class],
              @"input": [CDInputbox class],
              @"msgbox": [CDDialog class],
+             @"form": [CDForm class],
              @"progressbar": [CDProgressbar class],
              @"radio": [CDRadio class],
              @"slider": [CDSlider class],
@@ -409,3 +421,4 @@
 }
 
 @end
+
