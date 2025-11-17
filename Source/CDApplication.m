@@ -184,15 +184,6 @@
         CDOption *option = self.control.options[name];
         if (option.wasProvided) {
             
-            // Print actual values
-            for (NSUInteger i = 0; i < option.values.count; i++) {
-                id val = option.values[i];
-                fprintf(stderr, "    Value[%lu]: %s (class: %s)\n", (unsigned long)i, 
-                        [[NSString stringWithFormat:@"%@", val] UTF8String],
-                        [NSStringFromClass([val class]) UTF8String]);
-            }
-            fflush(stderr);
-            
             if (option.values.filterEmpty.count < option.minimumValues.unsignedIntegerValue) {
                 fprintf(stderr, "    ERROR: Too few values!\n");
                 fflush(stderr);

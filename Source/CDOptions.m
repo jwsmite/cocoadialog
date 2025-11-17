@@ -255,7 +255,7 @@
 
             // Retrieve the minimum and maximum values allowed for this option.
             NSInteger max = option.maximumValues.integerValue;
-            NSUInteger min = option.minimumValues.integerValue;
+//            NSUInteger min = option.minimumValues.integerValue;
 
             // Create an array to store values (in case option allows more than one).
             NSMutableArray<NSString *> *values = [NSMutableArray array];
@@ -274,26 +274,27 @@
             }
 
             // Extract value(s).
-            for (; i < stop; i++) {
-                
+            for (; i < stop; i++) {                
                 // Detect argument breaks.
                 argumentBreak = [args[i] isEqualToString:@"--"];
 
-                // Detect possible options.
-                BOOL isOption = NO;
+                // Detect if we've hit another option
+                BOOL hitAnotherOption = NO;
                 if (!argumentBreak && [CDOptions isOption:args[i]]) {
                     possibleOptionsDetected = YES;
-                    isOption = YES;
+                    hitAnotherOption = YES;
                 }
 
-                // Stop if there are no more arguments, if it's a double dash argument break,
-                // or if we found another option and already have minimum values
-                BOOL shouldStop = (i >= count || !args[i] || argumentBreak || 
-                                (isOption && values.count >= min));  // CHANGED: Stop immediately when we see an option
-                
+                // Stop if:
+                // - no more arguments
+                // - argument break (--)
+                // - hit another option (stops collecting for both multi-value and repeatable)
+                BOOL shouldStop = (i >= count || !args[i] || argumentBreak || hitAnotherOption);
+
                 if (shouldStop) {
                     break;
                 }
+                
                 [values addObject:args[i]];
             }
 

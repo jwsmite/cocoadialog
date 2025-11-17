@@ -30,27 +30,47 @@
     ]);
 }
 
+- (void) createControlView {
+    // Create the dropdown control programmatically since it's not in the XIB
+    dropdownControl = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(0, 0, 200, 26) pullsDown:NO];
+    
+    // Add it to the control view
+    [self.controlView addSubview:dropdownControl];
+    
+    // Set constraints for proper layout
+    dropdownControl.translatesAutoresizingMaskIntoConstraints = NO;
+    [dropdownControl.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
+    [dropdownControl.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor].active = YES;
+    [dropdownControl.topAnchor constraintEqualToAnchor:self.controlView.topAnchor].active = YES;
+    
+    // Set a minimum height for the control view
+    NSLayoutConstraint *heightConstraint = [self.controlView.heightAnchor constraintEqualToConstant:30];
+    heightConstraint.active = YES;
+}
+
 - (void) createControl {
+    
+    [super createControl];
+    
     // Setup the control
     dropdownControl.keyEquivalent = @" ";
     dropdownControl.target = self;
     dropdownControl.action = @selector(selectionChanged:);
-	[dropdownControl removeAllItems];
+    [dropdownControl removeAllItems];
 
     // Set pulldown style.
-    dropdownControl.pullsDown = self.options[@"pulldown"].wasProvided;
+    dropdownControl.pullsDown = self.options[@"pulldown"].boolValue;
 
     // Populate menu
     NSArray *items = self.options[@"items"].arrayValue;
-	if (items != nil && items.count) {
-		NSEnumerator *en = [items objectEnumerator];
-		id obj;
-		while (obj = [en nextObject]) {
-			[dropdownControl addItemWithTitle:(NSString *)obj];
-		}
+    
+    if (items != nil && items.count) {
+        for (id obj in items) {
+            [dropdownControl addItemWithTitle:(NSString *)obj];
+        }
         NSUInteger selected = self.options[@"selected"].wasProvided ? self.options[@"selected"].unsignedIntegerValue : 0;
         [dropdownControl selectItemAtIndex:selected];
-	}
+    }
 }
 
 - (void) controlHasFinished:(NSUInteger)button {

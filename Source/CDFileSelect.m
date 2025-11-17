@@ -24,7 +24,7 @@
 }
 
 - (void) createControl {
-    [self createControl];
+    [super createControl];
 
     // Check file existance.
     if (self.file && !self.file.isBlank && ![self.fileManager fileExistsAtPath:self.file]) {

@@ -359,7 +359,9 @@
 #pragma mark - Header
 
 - (void) createHeader {
-    [self setLabel:self.header withText:self.options[@"header"].stringValue];
+    NSString *headerText = self.options[@"header"].stringValue;
+    
+    [self setLabel:self.header withText:headerText];
     if (self.header.hidden) {
         [self.panel removeSubview:self.header movingAttribute:NSLayoutAttributeTop to:self.message];
     }
@@ -426,7 +428,9 @@
 #pragma mark - Message
 
 - (void) createMessage {
-    [self setLabel:self.message withText:self.options[@"message"].stringValue];
+    NSString *messageText = self.options[@"message"].stringValue;
+    
+    [self setLabel:self.message withText:messageText];
     if (self.message.hidden) {
         [self.panel removeSubview:self.message movingAttribute:NSLayoutAttributeTop to:self.controlView];
     }
@@ -689,6 +693,7 @@
 }
 
 - (void) setLabel:(CDTextField *)label withText:(NSString *)text {
+    
     label.markdown.enabled = self.options[@"markdown"].boolValue;
 
     // Immediately hide label if there's nothing there.
@@ -696,44 +701,17 @@
         label.hidden = YES;
         return;
     }
-
-    // Determine the maximum height for the text based on current available width.
-    // @see https://stackoverflow.com/a/32171028/1226717
+    
+    // Set the text first
+    label.stringValue = text;
+    
+    // Calculate the height needed for the text
     float width = label.frame.size.width;
-
-    NSError *error = nil;
-    NSData *data = nil;
-    NSTextField *clone = nil;
     
-    if (@available(macOS 10.13, *)) {
-        data = [NSKeyedArchiver archivedDataWithRootObject:label requiringSecureCoding:NO error:&error];
-        if (error) {
-            self.terminal.warning(@"Failed to archive label: %@", error.localizedDescription, nil);
-            return;
-        }
-        clone = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSTextField class] fromData:data error:&error];
-        if (error) {
-            self.terminal.warning(@"Failed to unarchive label: %@", error.localizedDescription, nil);
-            return;
-        }
-    } else {
-        #pragma clang diagnostic push
-        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        data = [NSKeyedArchiver archivedDataWithRootObject:label];
-        clone = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        #pragma clang diagnostic pop
-    }
-    
-    if (!clone) {
-        return;
-    }
-    
-    NSRect rect = {NSZeroPoint, NSMakeSize(width, 0)};
-    rect = [clone alignmentRectForFrame:rect];
-    clone.preferredMaxLayoutWidth = NSWidth(rect);
-    rect.size = clone.intrinsicContentSize;
-
-    float height = [clone frameForAlignmentRect:rect].size.height;
+    // Use the label's cell to calculate the required height
+    NSSize maxSize = NSMakeSize(width, CGFLOAT_MAX);  // CHANGED: constraint → maxSize
+    NSSize size = [label.cell cellSizeForBounds:NSMakeRect(0, 0, maxSize.width, maxSize.height)];
+    float height = size.height;
 
     // Update any height constraint on the label.
     for (NSLayoutConstraint *constraint in label.constraints) {
@@ -749,11 +727,6 @@
     // Set label's new height.
     if (label.frame.size.height != height) {
         [label setFrameSize:NSMakeSize(label.frame.size.width, height)];
-    }
-
-    // Set the text.
-    if (![label.stringValue isEqualToString:text]) {
-        label.stringValue = text;
     }
 
     [label displayIfNeeded];

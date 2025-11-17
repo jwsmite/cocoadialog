@@ -35,31 +35,43 @@
     return @"The text field can cannot be empty, please enter some text.";
 }
 
-- (void) controlHasFinished:(NSUInteger)button {
-    self.returnValues[@"value"] = self.input.stringValue;
-    [super controlHasFinished:button];
-}
-
-- (void) setControl:(id)sender {
+- (void) createControlView {
+    // Determine if it should be secure
     if (self.options[@"secure"].boolValue) {
         self.input = [[NSSecureTextField alloc] init];
     }
     else {
         self.input = [[NSTextField alloc] init];
     }
-
-    self.input.refusesFirstResponder = YES;
+    
+    self.input.refusesFirstResponder = NO;
 
     // Set initial text in textfield.
     [self.input setStringValue:self.options[@"value"].stringValue];
 
     // Select all the text.
-	if (self.options[@"selected"].wasProvided || self.options[@"selected"].boolValue) {
+    if (self.options[@"selected"].wasProvided || self.options[@"selected"].boolValue) {
         [self.input selectAll:nil];
-	}
-
-    // Add the control to the view.
+    }
+    
+    // Add it to the control view
     [self.controlView addSubview:self.input];
+    
+    // Set constraints for proper layout
+    self.input.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.input.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor constant:0].active = YES;
+    [self.input.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor constant:0].active = YES;
+    [self.input.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:0].active = YES;
+    [self.input.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor constant:0].active = YES;
+    
+    // Set minimum size for the control view itself
+    [self.controlView.heightAnchor constraintGreaterThanOrEqualToConstant:22].active = YES;
+    [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:300].active = YES;  // Add width constraint
+}
+
+- (void) controlHasFinished:(NSUInteger)button {
+    self.returnValues[@"value"] = self.input.stringValue;
+    [super controlHasFinished:button];
 }
 
 @end
