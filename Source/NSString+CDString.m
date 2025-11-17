@@ -103,18 +103,28 @@
 }
 
 #pragma mark - Public static methods
-// http://stackoverflow.com/a/35039384/1226717
-+ (instancetype) stringWithFormat:(NSString *)format array:(NSArray *)arrayArguments {
-    NSMethodSignature *methodSignature = [self vaListSignatureForArguments:arrayArguments];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
-
-    [invocation setTarget:self];
-    [invocation setSelector:@selector(stringWithFormat:)];
-
++ (NSString *) stringWithFormat:(NSString *)format array:(NSArray *)arguments {
+    NSMethodSignature *signature = [NSString instanceMethodSignatureForSelector:@selector(stringWithFormat:)];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    invocation.target = [NSString class];
+    invocation.selector = @selector(stringWithFormat:);
     [invocation setArgument:&format atIndex:2];
-    for (unsigned int i = 0; i < arrayArguments.count; i++) {
-        id obj = arrayArguments[i];
-        [invocation setArgument:(&obj) atIndex:i+3];
+
+    NSUInteger index = 3;
+    for (id arg in arguments) {
+        // CRITICAL FIX: Check if arg is valid before using it
+        id safeArg = arg;
+        
+        if (!arg || arg == [NSNull null]) {
+            safeArg = @"";
+        }
+        // Check if it's a valid object that responds to description
+        else if (![arg respondsToSelector:@selector(description)]) {
+            safeArg = @"<invalid>";
+        }
+        
+        [invocation setArgument:&safeArg atIndex:index];
+        index++;
     }
 
     [invocation invoke];

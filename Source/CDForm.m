@@ -16,14 +16,11 @@
 + (CDOptions *) availableOptions {
     CDOptions* options = super.availableOptions;
 
-    // Required at least one button.
-    options[@"buttons"].require(YES).min(1);
-
     return options.addOptionsToScope([self class].scope,
   @[
-    CDOption.create(CDString,    @"labels").require(YES).min(1).max(-1),
-    CDOption.create(CDString,    @"values").max(-1),
-    CDOption.create(CDBoolean,   @"secure").max(-1),
+    CDOption.create(CDString,    @"label").require(YES).min(1).max(0),
+    CDOption.create(CDString,    @"value").max(0),
+    CDOption.create(CDBoolean,   @"secure-field"),  
     CDOption.create(CDBoolean,   @"selected"),
     ]);
 }
@@ -50,48 +47,82 @@
     [super controlHasFinished:button];
 }
 
-- (void) setControl:(id)sender {
+- (void) createControlView {
+    // Initialize arrays
     self.textFields = [NSMutableArray array];
     self.labels = [NSMutableArray array];
     
-    NSArray *labelTexts = self.options[@"labels"].arrayValue;
-    NSArray *initialValues = self.options[@"values"].arrayValue;
-    NSArray *secureFields = self.options[@"secure"].arrayValue;
-    
+    // Get the accumulated label values (each --label adds one value)
+    NSArray *labelTexts = self.options[@"label"].arrayValue;  // Changed from "labels" to "label"
+    NSArray *initialValues = self.options[@"value"].arrayValue;  // Changed from "values" to "value"
+
+    // Validate we have labels
+    if (!labelTexts || labelTexts.count == 0) {
+        return;
+    }
+
+    CGFloat viewWidth = self.controlView.frame.size.width;
+    if (viewWidth == 0) {
+        viewWidth = 400;
+    }
     CGFloat yOffset = 0;
     CGFloat fieldHeight = 22;
     CGFloat labelHeight = 17;
     CGFloat spacing = 8;
     
     for (NSUInteger i = 0; i < labelTexts.count; i++) {
+        // Get label text
+        id labelObj = labelTexts[i];
+        NSString *labelText = @"Field";
+        if ([labelObj isKindOfClass:[NSString class]]) {
+            labelText = (NSString *)labelObj;
+        }
+
         // Create label
         NSTextField *label = [[NSTextField alloc] init];
-        label.stringValue = labelTexts[i];
+        label.stringValue = labelText;
         label.editable = NO;
         label.selectable = NO;
         label.bordered = NO;
+        label.drawsBackground = NO;
         label.backgroundColor = [NSColor clearColor];
-        label.frame = NSMakeRect(0, yOffset, self.controlView.frame.size.width, labelHeight);
+        label.frame = NSMakeRect(0, yOffset, viewWidth, labelHeight);
         [self.labels addObject:label];
         [self.controlView addSubview:label];
         
         yOffset += labelHeight + 4;
         
+        // Check if this specific field should be secure
+        // Since --secure-field is a flag, check if it was provided i times
+        // For now, just make it NOT secure (we'll handle this next)
+        BOOL isSecure = NO;
+        NSString *lowerLabel = [labelText lowercaseString];
+        if ([lowerLabel containsString:@"password"] || 
+            [lowerLabel containsString:@"secret"] ||
+            [lowerLabel containsString:@"pin"] ||
+            [lowerLabel containsString:@"passphrase"]) {
+            isSecure = YES;
+}
+
         // Create text field
         NSTextField *textField;
-        BOOL isSecure = i < secureFields.count && [secureFields[i] boolValue];
-        
         if (isSecure) {
             textField = [[NSSecureTextField alloc] init];
         } else {
             textField = [[NSTextField alloc] init];
         }
         
-        textField.frame = NSMakeRect(0, yOffset, self.controlView.frame.size.width, fieldHeight);
+        textField.frame = NSMakeRect(0, yOffset, viewWidth, fieldHeight);
         
         // Set initial value if provided
-        if (i < initialValues.count && initialValues[i] != nil) {
-            textField.stringValue = initialValues[i];
+        if (initialValues && i < initialValues.count) {
+            id initialObj = initialValues[i];
+            if ([initialObj isKindOfClass:[NSString class]]) {
+                NSString *initialValue = (NSString *)initialObj;
+                if (initialValue.length > 0) {
+                    textField.stringValue = initialValue;
+                }
+            }
         }
         
         // Select all text in first field if requested
@@ -106,7 +137,7 @@
     }
     
     // Adjust control view height
-    CGRect frame = self.controlView.frame;
+    NSRect frame = self.controlView.frame;
     frame.size.height = yOffset;
     self.controlView.frame = frame;
 }

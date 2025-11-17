@@ -11,8 +11,7 @@
 
 @interface CDForm : CDDialog
 
-@property (retain) NSMutableArray<NSTextField *> *textFields;
-@property (retain) NSMutableArray<NSTextField *> *labels;
+@property (strong, nonatomic) NSMutableArray<NSTextField *> *textFields;
+@property (strong, nonatomic) NSMutableArray<NSTextField *> *labels;
 
 @end
-

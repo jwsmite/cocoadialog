@@ -211,6 +211,7 @@
         NSString *arg;
         BOOL unknownOption = NO;
         for (NSInteger i = 0; i < count; i++) {
+            
             arg = args[i];
 
             NSString *optionName = [CDOptions optionNameFromArgument:arg];
@@ -254,7 +255,7 @@
 
             // Retrieve the minimum and maximum values allowed for this option.
             NSInteger max = option.maximumValues.integerValue;
-            NSInteger min = option.minimumValues.integerValue;
+            NSUInteger min = option.minimumValues.integerValue;
 
             // Create an array to store values (in case option allows more than one).
             NSMutableArray<NSString *> *values = [NSMutableArray array];
@@ -265,7 +266,7 @@
             // Determine how many values should be extracted.
             BOOL argumentBreak = NO;
             BOOL possibleOptionsDetected = NO;
-            NSInteger stop = max == 0 ? count : i + max;
+            NSInteger stop = (max <= 0) ? count : i + max;  // Changed: max == 0 to max <= 0
 
             // Make sure we don't go past the argument count.
             if (stop > count) {
@@ -274,16 +275,23 @@
 
             // Extract value(s).
             for (; i < stop; i++) {
+                
                 // Detect argument breaks.
                 argumentBreak = [args[i] isEqualToString:@"--"];
 
                 // Detect possible options.
+                BOOL isOption = NO;
                 if (!argumentBreak && [CDOptions isOption:args[i]]) {
                     possibleOptionsDetected = YES;
+                    isOption = YES;
                 }
 
-                // Stop if there are no more arguments, if it's a double dash argument break, or if option has no min.
-                if (i >= count || !args[i] || argumentBreak || (possibleOptionsDetected && min == 0 && max == 1 && !values.count)) {
+                // Stop if there are no more arguments, if it's a double dash argument break,
+                // or if we found another option and already have minimum values
+                BOOL shouldStop = (i >= count || !args[i] || argumentBreak || 
+                                (isOption && values.count >= min));  // CHANGED: Stop immediately when we see an option
+                
+                if (shouldStop) {
                     break;
                 }
                 [values addObject:args[i]];
@@ -303,9 +311,22 @@
                 option.wasProvided = NO;
                 option.values = @[].mutableCopy;
             }
-            // Set the provided values on the option.
+            
             else {
-                option.values = values.mutableCopy;
+                
+                // Check if this option already has values (for repeatable options)
+                NSMutableArray *existingValues = option.values;
+                BOOL hasExisting = existingValues.count > 0 && ![existingValues[0] isKindOfClass:[NSNull class]];
+                
+                if (hasExisting) {                    
+                    // Directly add to the existing mutable array instead of using the setter
+                    for (NSString *newValue in values) {
+                        [existingValues addObject:newValue];
+                    }
+                } else {
+                    // First time setting values - use the setter
+                    option.values = values.mutableCopy;
+                }
             }
         }
 
@@ -371,3 +392,4 @@
 
 
 @end
+

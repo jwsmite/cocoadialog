@@ -151,13 +151,7 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (@available(macOS 11.0, *)) {
-        // On macOS 11+, we should use UserNotifications framework
-        // For now, we'll just skip setting up notifications on newer systems
-        // TODO: Implement UserNotifications framework support
-    } else {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
-    }
 #pragma clang diagnostic pop
 
     self.terminal.verbose(@"Initiating control: %@", self.control.name.doubleQuote, nil);
@@ -172,6 +166,7 @@
 
     // Warn about unknown options.
     NSArray *unknown = [self.control.options unknownOptions].sortedAlphabetically;
+
     if (unknown.count) {
         for (NSString *name in unknown) {
             self.terminal.warning(NSLocalizedString(@"WARNING_UNKNOWN_OPTION".localized, nil), name.optionFormat, nil);
@@ -185,33 +180,32 @@
 
     // Validate minimum and maximum values were provided.
     for (NSString *name in self.control.options) {
+        
         CDOption *option = self.control.options[name];
         if (option.wasProvided) {
+            
+            // Print actual values
+            for (NSUInteger i = 0; i < option.values.count; i++) {
+                id val = option.values[i];
+                fprintf(stderr, "    Value[%lu]: %s (class: %s)\n", (unsigned long)i, 
+                        [[NSString stringWithFormat:@"%@", val] UTF8String],
+                        [NSStringFromClass([val class]) UTF8String]);
+            }
+            fflush(stderr);
+            
             if (option.values.filterEmpty.count < option.minimumValues.unsignedIntegerValue) {
+                fprintf(stderr, "    ERROR: Too few values!\n");
+                fflush(stderr);
                 self.terminal.error(@"The %@ control requires a minimum of %@ values for the %@ option.", self.control.name.doubleQuote, option.minimumValues, name.optionFormat, nil).exit(CDTerminalExitCodeOptionInvalid);
             }
             if (option.maximumValues.unsignedIntegerValue && option.values.filterEmpty.count > option.maximumValues.unsignedIntegerValue) {
+                fprintf(stderr, "    ERROR: Too many values!\n");
+                fflush(stderr);
                 self.terminal.error(@"The %@ control is limited to a maximum of %@ values for the %@ option.", self.control.name.doubleQuote, option.maximumValues, name.optionFormat, nil).exit(CDTerminalExitCodeOptionInvalid);
             }
         }
     }
 
-    // Validate control option requirements.
-    NSMutableArray *missingOptions = [NSMutableArray array];
-    NSDictionary *required = self.control.options.requiredOptions;
-    if (required.count) {
-        for (NSString *name in required) {
-            if (!self.control.options[name].wasProvided) {
-                [missingOptions addObject:name];
-            }
-        }
-    }
-    if (missingOptions.count) {
-        NSString *missing = [[missingOptions.sortedAlphabetically prependStringsWith:@"--"] componentsJoinedByString:@", "];
-        self.terminal.error(@"The %@ control requires the following options: %@", self.control.name.doubleQuote, missing, nil).exit(CDTerminalExitCodeOptionRequired);
-    }
-
-    // Create the control.
     [self.control createControl];
 
     // Bring application into focus.
@@ -331,7 +325,7 @@
     NSString *controlName = nil;
     NSMutableArray <NSString*>* args = self.terminal.arguments;
     NSArray *controls = [CDApplication availableControls];
-
+        
     // Attempt to find an exact match with a currently supported control.
     for (NSUInteger i = 0; i < args.count; i++) {
         if ([controls containsObject:args[i]]) {

@@ -20,12 +20,12 @@
     options[@"buttons"].require(YES).min(1);
 
     return options.addOptionsToScope([self class].scope,
- @[
-   CDOption.create(CDString,    @"labels").require(YES).min(1).max(-1),
-   CDOption.create(CDString,    @"values").max(-1),
-   CDOption.create(CDBoolean,   @"secure").max(-1),
-   CDOption.create(CDBoolean,   @"selected"),
-   ]);
+  @[
+    CDOption.create(CDString,    @"labels").require(YES).min(1).max(-1),
+    CDOption.create(CDString,    @"values").max(-1),
+    CDOption.create(CDString,    @"secure").max(-1),
+    CDOption.create(CDBoolean,   @"selected"),
+    ]);
 }
 
 - (BOOL)isReturnValueEmpty {
@@ -50,7 +50,7 @@
     [super controlHasFinished:button];
 }
 
-- (void) setControl:(id)sender {
+- (void) createControlView {
     self.textFields = [NSMutableArray array];
     self.labels = [NSMutableArray array];
     
@@ -79,7 +79,16 @@
         
         // Create text field
         NSTextField *textField;
-        BOOL isSecure = i < secureFields.count && [secureFields[i] boolValue];
+        
+        // Check if this field should be secure
+        BOOL isSecure = NO;
+        if (i < secureFields.count) {
+            NSString *secureValue = secureFields[i];
+            // Check for various "true" values
+            isSecure = [secureValue isEqualToStringCaseInsensitive:@"yes"] ||
+                       [secureValue isEqualToStringCaseInsensitive:@"true"] ||
+                       [secureValue isEqualToStringCaseInsensitive:@"1"];
+        }
         
         if (isSecure) {
             textField = [[NSSecureTextField alloc] init];
@@ -90,7 +99,7 @@
         textField.frame = NSMakeRect(0, yOffset, self.controlView.frame.size.width, fieldHeight);
         
         // Set initial value if provided
-        if (i < initialValues.count && initialValues[i] != nil) {
+        if (i < initialValues.count && initialValues[i] != nil && ![initialValues[i] isBlank]) {
             textField.stringValue = initialValues[i];
         }
         
@@ -112,4 +121,3 @@
 }
 
 @end
-

@@ -61,18 +61,25 @@
 
 #pragma mark - Public instance methods
 - (id) convertValue:(id)value {
-    // Nil or Null.
-    if (!value || [value isKindOfClass:[NSNull class]]) {
-        return self.defaultValue;
+    // Nil or Null - comprehensive check
+    if (value == nil || value == [NSNull null] || [value isKindOfClass:[NSNull class]]) {
+        id defaultVal = self.defaultValue;
+        // Make sure default value isn't null either
+        if (defaultVal == nil || defaultVal == [NSNull null]) {
+            if (self.valueType == CDBoolean) return @NO;
+            if (self.valueType == CDNumber) return @0;
+            return @"";
+        }
+        return defaultVal;
     }
 
     // Boolean.
     if (self.valueType == CDBoolean) {
-        if (value && [value isKindOfClass:[NSString class]]) {
-            return [NSNumber numberWithBool:((NSString*)value).boolValue];
+        if ([value isKindOfClass:[NSString class]]) {
+            return [NSNumber numberWithBool:[(NSString*)value boolValue]];
         }
-        else if (value && [value isKindOfClass:[NSNumber class]]) {
-            return [NSNumber numberWithBool:((NSNumber*)value).boolValue];
+        else if ([value isKindOfClass:[NSNumber class]]) {
+            return [NSNumber numberWithBool:[(NSNumber*)value boolValue]];
         }
         return @NO;
     }
@@ -80,33 +87,47 @@
     // Number.
     if (self.valueType == CDNumber) {
         if ([value isKindOfClass:[NSString class]]) {
-            return ((NSString*)value).numberValue ?: self.defaultValue;
+            NSString *strValue = (NSString*)value;
+            return strValue.numberValue ?: self.defaultValue ?: @0;
         }
         else if ([value isKindOfClass:[NSNumber class]]) {
             return value;
         }
-
         return @0;
     }
 
     // String or number.
     else if (self.valueType == CDStringOrNumber) {
         if ([value isKindOfClass:[NSString class]]) {
-            return ((NSString*)value).numberValue ?: value;
+            NSString *strValue = (NSString*)value;
+            return strValue.numberValue ?: value;
         }
         else if ([value isKindOfClass:[NSNumber class]]) {
             return value;
         }
-        return @"%@".arguments(value, nil).numberValue ?: self.defaultValue;
+        // Use standard stringWithFormat instead of custom .arguments()
+        @try {
+            return [NSString stringWithFormat:@"%@", value].numberValue ?: self.defaultValue ?: @"";
+        } @catch (NSException *exception) {
+            return self.defaultValue ?: @"";
+        }
     }
 
-    // String.
-    if ([value isKindOfClass:[NSString class]] || [value isKindOfClass:[NSNumber class]]) {
-        return @"%@".arguments(value, nil);
+    // String - use standard stringWithFormat instead of .arguments()
+    if ([value isKindOfClass:[NSString class]]) {
+        return (NSString*)value;
     }
-
-    // All else fails, use the default value.
-    return self.defaultValue;
+    else if ([value isKindOfClass:[NSNumber class]]) {
+        return [NSString stringWithFormat:@"%@", value];
+    }
+    
+    // Last resort - try to convert to string safely
+    @try {
+        return [NSString stringWithFormat:@"%@", value];
+    } @catch (NSException *exception) {
+        NSLog(@"CDOption convertValue: exception converting value: %@", exception);
+        return self.defaultValue ?: @"";
+    }
 }
 
 - (float) percentageOf:(float)value {
@@ -150,23 +171,33 @@
 
 - (void) setValue:(id)value atIndex:(NSUInteger)index {
     // Immediately return if index exceeds maximum allowed values.
-    if (index > self.maximumValues.unsignedIntegerValue - 1) {
+    if (self.maximumValues.integerValue > 0 && 
+        index > self.maximumValues.unsignedIntegerValue - 1) {
         return;
     }
-    [_values replaceObjectAtIndex:index withObject:[self convertValue:value]];
+    
+    id convertedValue = [self convertValue:value];
+    
+    // If the array doesn't have enough elements yet, add them
+    while (_values.count <= index) {
+        [_values addObject:[NSNull null]];
+    }
+    
+    [_values replaceObjectAtIndex:index withObject:convertedValue];
 }
 
 - (void) setValues:(NSMutableArray *)values {
+    
     // Immediately return if there are no values.
     if (!values || !values.count) {
         return;
     }
-
+    
     NSNumber *currentMaximumValues = self.maximumValues.copy;
     self.maximumValues = @0;
     _values = @[].mutableCopy;
     self.maximumValues = currentMaximumValues;
-
+    
     for (NSUInteger i = 0; i < values.count; i++) {
         [self setValue:values[i] atIndex:i];
     }
@@ -305,34 +336,60 @@
 - (NSArray<NSNumber *> *) arrayOfNumbers {
     NSMutableArray *array = @[].mutableCopy;
     for (id item in self.arrayValue) {
-        if (self.valueType == CDBoolean) {
-            [array addObject:@"%@".arguments(item, nil).boolValue ? @1 : @0];
-        }
-        else if (self.valueType == CDString) {
-            NSString* string = @"%@".arguments(item, nil);
-            if (string.isBlank) {
-                [array addObject:@0];
+        @try {
+            if (self.valueType == CDBoolean) {
+                BOOL boolVal = NO;
+                if ([item isKindOfClass:[NSNumber class]]) {
+                    boolVal = [(NSNumber*)item boolValue];
+                } else if ([item isKindOfClass:[NSString class]]) {
+                    boolVal = [(NSString*)item boolValue];
+                }
+                [array addObject:boolVal ? @1 : @0];
             }
-            else {
-                [array addObject:string.numberValue ?: @0];
-            }
-        }
-        else if (self.valueType == CDStringOrNumber) {
-            if ([item isKindOfClass:[NSString class]]) {
-                NSString* string = @"%@".arguments(item, nil);
-                if (string.isBlank) {
+            else if (self.valueType == CDString) {
+                NSString* string = nil;
+                if ([item isKindOfClass:[NSString class]]) {
+                    string = (NSString*)item;
+                } else if ([item isKindOfClass:[NSNumber class]]) {
+                    string = [NSString stringWithFormat:@"%@", item];
+                } else {
+                    string = @"";
+                }
+                
+                if (string.length == 0) {
                     [array addObject:@0];
                 }
                 else {
                     [array addObject:string.numberValue ?: @0];
                 }
             }
-            else {
-                [array addObject:item];
+            else if (self.valueType == CDStringOrNumber) {
+                if ([item isKindOfClass:[NSString class]]) {
+                    NSString* string = (NSString*)item;
+                    if (string.length == 0) {
+                        [array addObject:@0];
+                    }
+                    else {
+                        [array addObject:string.numberValue ?: @0];
+                    }
+                }
+                else if ([item isKindOfClass:[NSNumber class]]) {
+                    [array addObject:item];
+                }
+                else {
+                    [array addObject:@0];
+                }
             }
-        }
-        else {
-            [array addObject:item];
+            else {
+                if ([item isKindOfClass:[NSNumber class]]) {
+                    [array addObject:item];
+                } else {
+                    [array addObject:@0];
+                }
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"CDOption arrayOfNumbers: exception converting item: %@", exception);
+            [array addObject:@0];
         }
     }
     return array;
@@ -341,20 +398,38 @@
 - (NSArray<NSString *> *) arrayOfStrings {
     NSMutableArray *array = @[].mutableCopy;
     for (id item in self.arrayValue) {
-        // Boolean.
-        if (self.valueType == CDBoolean) {
-            [array addObject:@"%@".arguments(item, nil).boolValue ? @"YES".localized : @"NO".localized];
-            continue;
-        }
+        @try {
+            // Boolean.
+            if (self.valueType == CDBoolean) {
+                BOOL boolVal = NO;
+                if ([item isKindOfClass:[NSNumber class]]) {
+                    boolVal = [(NSNumber*)item boolValue];
+                } else if ([item isKindOfClass:[NSString class]]) {
+                    boolVal = [(NSString*)item boolValue];
+                }
+                [array addObject:boolVal ? @"YES".localized : @"NO".localized];
+                continue;
+            }
 
-        // Number (percent).
-        if ((self.valueType == CDNumber || self.valueType == CDStringOrNumber) && [item isKindOfClass:[NSNumber class]] && ((NSNumber*)item).isPercent) {
-            NSNumber *number = [NSNumber numberWithDouble:((NSNumber*)item).doubleValue * 100];
-            [array addObject:@"%@%%".arguments(number, nil)];
-            continue;
-        }
+            // Number (percent).
+            if ((self.valueType == CDNumber || self.valueType == CDStringOrNumber) && [item isKindOfClass:[NSNumber class]] && ((NSNumber*)item).isPercent) {
+                NSNumber *number = [NSNumber numberWithDouble:((NSNumber*)item).doubleValue * 100];
+                [array addObject:[NSString stringWithFormat:@"%@%%", number]];
+                continue;
+            }
 
-        [array addObject:@"%@".arguments(item, nil)];
+            // Convert to string
+            if ([item isKindOfClass:[NSString class]]) {
+                [array addObject:(NSString*)item];
+            } else if ([item isKindOfClass:[NSNumber class]]) {
+                [array addObject:[NSString stringWithFormat:@"%@", item]];
+            } else {
+                [array addObject:@""];
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"CDOption arrayOfStrings: exception converting item: %@", exception);
+            [array addObject:@""];
+        }
     }
     return array;
 }
@@ -362,20 +437,31 @@
 - (NSArray*) arrayOfStringOrNumbers {
     NSMutableArray *array = @[].mutableCopy;
     for (id item in self.arrayValue) {
-        // Boolean.
-        if (self.valueType == CDBoolean) {
-            [array addObject:@"%@".arguments(item, nil).boolValue ? @"YES".localized : @"NO".localized];
-            continue;
-        }
+        @try {
+            // Boolean.
+            if (self.valueType == CDBoolean) {
+                BOOL boolVal = NO;
+                if ([item isKindOfClass:[NSNumber class]]) {
+                    boolVal = [(NSNumber*)item boolValue];
+                } else if ([item isKindOfClass:[NSString class]]) {
+                    boolVal = [(NSString*)item boolValue];
+                }
+                [array addObject:boolVal ? @"YES".localized : @"NO".localized];
+                continue;
+            }
 
-        // String Percent.
-        if ((self.valueType == CDStringOrNumber) && [item isKindOfClass:[NSNumber class]] && ((NSNumber*)item).isPercent) {
-            NSNumber *number = [NSNumber numberWithDouble:((NSNumber*)item).doubleValue * 100];
-            [array addObject:@"%@%%".arguments(number, nil)];
-            continue;
-        }
+            // String Percent.
+            if ((self.valueType == CDStringOrNumber) && [item isKindOfClass:[NSNumber class]] && ((NSNumber*)item).isPercent) {
+                NSNumber *number = [NSNumber numberWithDouble:((NSNumber*)item).doubleValue * 100];
+                [array addObject:[NSString stringWithFormat:@"%@%%", number]];
+                continue;
+            }
 
-        [array addObject:item];
+            [array addObject:item];
+        } @catch (NSException *exception) {
+            NSLog(@"CDOption arrayOfStringOrNumbers: exception converting item: %@", exception);
+            [array addObject:@""];
+        }
     }
     return array;
 }
