@@ -51,35 +51,68 @@
     [self stopControl];
 }
 
+- (void) createControl {
+    [super createControl];
+    
+    // After the control is created, adjust the panel height to fit all fields
+    NSArray *labelTexts = self.options[@"label"].arrayValue;
+    if (labelTexts && labelTexts.count > 0) {
+        CGFloat fieldHeight = 22;
+        CGFloat labelHeight = 17;
+        CGFloat spacing = 8;
+        CGFloat topPadding = 10;
+        CGFloat bottomPadding = 10;
+        
+        // Calculate total height needed for all form fields
+        CGFloat formHeight = topPadding + 
+                            (labelTexts.count * (labelHeight + 4 + fieldHeight + spacing)) + 
+                            bottomPadding;
+        
+        // Get current panel size
+        NSSize currentSize = self.panel.frame.size;
+        
+        // Calculate additional height needed
+        // Base dialog has header, message, buttons (roughly 150-200pt)
+        CGFloat minDialogHeight = 180;  // Minimum for header/buttons/margins
+        CGFloat desiredHeight = minDialogHeight + formHeight;
+        
+        // Only resize if we need more space
+        if (desiredHeight > currentSize.height) {
+            NSRect frame = self.panel.frame;
+            CGFloat heightDiff = desiredHeight - frame.size.height;
+            frame.size.height = desiredHeight;
+            frame.origin.y -= heightDiff;  // Adjust Y to keep top-left position
+            [self.panel setFrame:frame display:YES animate:NO];
+        }
+    }
+}
+
 - (void) createControlView {
     // Initialize arrays
     self.textFields = [NSMutableArray array];
     self.labels = [NSMutableArray array];
     
     // Get the accumulated label values (each --label adds one value)
-    NSArray *labelTexts = self.options[@"label"].arrayValue;  // Changed from "labels" to "label"
-    NSArray *initialValues = self.options[@"value"].arrayValue;  // Changed from "values" to "value"
+    NSArray *labelTexts = self.options[@"label"].arrayValue;
+    NSArray *initialValues = self.options[@"value"].arrayValue;
 
     // Validate we have labels
     if (!labelTexts || labelTexts.count == 0) {
         return;
     }
 
-    CGFloat viewWidth = self.controlView.frame.size.width;
-    if (viewWidth == 0) {
-        viewWidth = 400;
-    }
-    CGFloat yOffset = 0;
     CGFloat fieldHeight = 22;
     CGFloat labelHeight = 17;
     CGFloat spacing = 8;
+    CGFloat topPadding = 10;
+    
+    NSView *previousView = nil;
     
     for (NSUInteger i = 0; i < labelTexts.count; i++) {
         // Get label text
-        id labelObj = labelTexts[i];
-        NSString *labelText = @"Field";
-        if ([labelObj isKindOfClass:[NSString class]]) {
-            labelText = (NSString *)labelObj;
+        NSString *labelText = labelTexts[i];
+        if (![labelText isKindOfClass:[NSString class]]) {
+            labelText = @"Field";
         }
 
         // Create label
@@ -90,15 +123,23 @@
         label.bordered = NO;
         label.drawsBackground = NO;
         label.backgroundColor = [NSColor clearColor];
-        label.frame = NSMakeRect(0, yOffset, viewWidth, labelHeight);
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        
         [self.labels addObject:label];
         [self.controlView addSubview:label];
         
-        yOffset += labelHeight + 4;
+        // Label constraints - CHANGED: Use fixed width instead of trailing anchor
+        [label.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
+        [label.widthAnchor constraintEqualToConstant:350].active = YES;  // ← CHANGED
+        [label.heightAnchor constraintEqualToConstant:labelHeight].active = YES;
         
-        // Check if this specific field should be secure
-        // Since --secure-field is a flag, check if it was provided i times
-        // For now, just make it NOT secure (we'll handle this next)
+        if (previousView == nil) {
+            [label.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:topPadding].active = YES;
+        } else {
+            [label.topAnchor constraintEqualToAnchor:previousView.bottomAnchor constant:spacing].active = YES;
+        }
+        
+        // Check if this field should be secure
         BOOL isSecure = NO;
         NSString *lowerLabel = [labelText lowercaseString];
         if ([lowerLabel containsString:@"password"] || 
@@ -106,7 +147,7 @@
             [lowerLabel containsString:@"pin"] ||
             [lowerLabel containsString:@"passphrase"]) {
             isSecure = YES;
-}
+        }
 
         // Create text field
         NSTextField *textField;
@@ -116,16 +157,13 @@
             textField = [[NSTextField alloc] init];
         }
         
-        textField.frame = NSMakeRect(0, yOffset, viewWidth, fieldHeight);
+        textField.translatesAutoresizingMaskIntoConstraints = NO;
         
         // Set initial value if provided
         if (initialValues && i < initialValues.count) {
-            id initialObj = initialValues[i];
-            if ([initialObj isKindOfClass:[NSString class]]) {
-                NSString *initialValue = (NSString *)initialObj;
-                if (initialValue.length > 0) {
-                    textField.stringValue = initialValue;
-                }
+            NSString *initialValue = initialValues[i];
+            if ([initialValue isKindOfClass:[NSString class]] && initialValue.length > 0) {
+                textField.stringValue = initialValue;
             }
         }
         
@@ -137,13 +175,32 @@
         [self.textFields addObject:textField];
         [self.controlView addSubview:textField];
         
-        yOffset += fieldHeight + spacing;
+        // Text field constraints - CHANGED: Use fixed width instead of trailing anchor
+        [textField.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
+        [textField.widthAnchor constraintEqualToConstant:350].active = YES;  // ← CHANGED
+        [textField.heightAnchor constraintEqualToConstant:fieldHeight].active = YES;
+        [textField.topAnchor constraintEqualToAnchor:label.bottomAnchor constant:4].active = YES;
+        
+        previousView = textField;
     }
     
-    // Adjust control view height
-    NSRect frame = self.controlView.frame;
-    frame.size.height = yOffset;
-    self.controlView.frame = frame;
+    // Set the control view's height based on last field
+    if (previousView) {
+        // Add a flexible spacer view instead of constraining the last field's bottom
+        NSView *spacer = [[NSView alloc] init];
+        spacer.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.controlView addSubview:spacer];
+        
+        [spacer.topAnchor constraintEqualToAnchor:previousView.bottomAnchor constant:spacing].active = YES;
+        [spacer.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
+        [spacer.widthAnchor constraintEqualToConstant:1].active = YES;
+        [spacer.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor constant:-10].active = YES;
+        [spacer.heightAnchor constraintGreaterThanOrEqualToConstant:10].active = YES;  // Minimum bottom padding
+        
+        // Calculate and set minimum height
+        CGFloat totalHeight = topPadding + (labelTexts.count * (labelHeight + 4 + fieldHeight + spacing)) + 10;
+        [self.controlView.heightAnchor constraintGreaterThanOrEqualToConstant:totalHeight].active = YES;
+    }
 }
 
 @end
