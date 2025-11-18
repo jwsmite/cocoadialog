@@ -39,12 +39,16 @@
 }
 
 - (void) controlHasFinished:(NSUInteger)button {
-    NSMutableArray *values = [NSMutableArray array];
+    // Output button number
+    [self.terminal writeLine:[NSString stringWithFormat:@"button: %lu", (unsigned long)button]];
+    
+    // Output each value on its own line
     for (NSTextField *field in self.textFields) {
-        [values addObject:field.stringValue];
+        NSString *value = field.stringValue ?: @"";
+        [self.terminal writeLine:[NSString stringWithFormat:@"value: %@", value]];
     }
-    self.returnValues[@"values"] = values;
-    [super controlHasFinished:button];
+    
+    [self stopControl];
 }
 
 - (void) createControlView {

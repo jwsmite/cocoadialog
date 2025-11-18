@@ -184,14 +184,20 @@
         CDOption *option = self.control.options[name];
         if (option.wasProvided) {
             
-            if (option.values.filterEmpty.count < option.minimumValues.unsignedIntegerValue) {
-                fprintf(stderr, "    ERROR: Too few values!\n");
-                fflush(stderr);
+            // Don't filter values for validation - use raw count
+            NSUInteger valueCount = option.values.count;
+            NSUInteger min = option.minimumValues.unsignedIntegerValue;
+            NSUInteger max = option.maximumValues.unsignedIntegerValue;
+            
+            // Skip validation for flag options (min=0, max=1, typically booleans)
+            if (min == 0 && max == 1) {
+                continue;
+            }
+            
+            if (valueCount < min) {
                 self.terminal.error(@"The %@ control requires a minimum of %@ values for the %@ option.", self.control.name.doubleQuote, option.minimumValues, name.optionFormat, nil).exit(CDTerminalExitCodeOptionInvalid);
             }
-            if (option.maximumValues.unsignedIntegerValue && option.values.filterEmpty.count > option.maximumValues.unsignedIntegerValue) {
-                fprintf(stderr, "    ERROR: Too many values!\n");
-                fflush(stderr);
+            if (max && valueCount > max) {
                 self.terminal.error(@"The %@ control is limited to a maximum of %@ values for the %@ option.", self.control.name.doubleQuote, option.maximumValues, name.optionFormat, nil).exit(CDTerminalExitCodeOptionInvalid);
             }
         }
