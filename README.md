@@ -283,7 +283,7 @@ Use `cocoadialog help` to see all available controls and options.
 
 ```bash
 # Clone the repository
-git clone https://github.com/cocoadialog/cocoadialog.git
+git clone https://github.com/jwsmite/cocoadialog.git
 cd cocoadialog
 
 # Install dependencies
@@ -332,12 +332,6 @@ cocoaDialog is licensed under GPL-2. See [LICENSE](LICENSE) for details.
 - Original authors: Mark A. Stratman, Mark Carver
 - Contributors: See [GitHub contributors](https://github.com/cocoadialog/cocoadialog/graphs/contributors)
 - Recent improvements: Enhanced with AI assistance
-
-## Support
-
-- [Documentation](https://cocoadialog.com/docs)
-- [Issue Tracker](https://github.com/cocoadialog/cocoadialog/issues)
-- [Discussions](https://github.com/cocoadialog/cocoadialog/discussions)
 
 ## Example Use Cases
 
@@ -404,4 +398,4 @@ cocoadialog msgbox --title "Success" \
 
 ---
 
-**Note**: This is a maintained fork with recent improvements. For the original project, see [cocoadialog.com](https://cocoadialog.com).
+**Note**: This is a modified fork with some modernization. For the original project, see [cocoadialog.com](https://cocoadialog.com).
