@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "02E0D2956AE49C3557330536DA5689BA"
+               BlueprintIdentifier = "91357206DC7059550DA24F7171C2BDA3"
                BuildableName = "libPods-cocoadialog.a"
                BlueprintName = "Pods-cocoadialog"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -65,10 +65,9 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      enableAddressSanitizer = "YES"
+      buildConfiguration = "Release"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -87,6 +86,12 @@
             ReferencedContainer = "container:cocoadialog.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "msgbox --title &quot;Test&quot; --text &quot;Header&quot; --informative-text &quot;Body text here&quot; --button1 &quot;OK&quot; --button2 &quot;Cancel&quot;"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Debug"
@@ -109,7 +114,8 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
+      customArchiveName = "Release"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
