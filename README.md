@@ -57,7 +57,7 @@ cocoadialog msgbox --title "Confirm" \
   --icon caution
 ```
 
-![alt text](https://github.com/jwsmite/cocoadialog/Screenshots/msgbox.png)
+![msgbox preview](https://github.com/jwsmite/cocoadialog/blob/master/Screenshots/msgbox.png)
 
 ### Input Box
 
@@ -118,6 +118,7 @@ if [[ $button == "0" ]]; then
     # Password field automatically appears as secure (dots)
 fi
 ```
+![form preview](https://github.com/jwsmite/cocoadialog/blob/master/Screenshots/form.png) 
 
 **Note**: The form control automatically detects fields that should be secure (password, secret, pin, passphrase) and displays them as password fields.
 
