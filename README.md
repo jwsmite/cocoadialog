@@ -57,7 +57,7 @@ cocoadialog msgbox --title "Confirm" \
   --icon caution
 ```
 
-### `<https://github.com/jwsmite/cocoadialog/Screenshots/msgbox.png>`
+![alt text](https://github.com/jwsmite/cocoadialog/Screenshots/msgbox.png)
 
 ### Input Box
 
