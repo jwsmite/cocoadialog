@@ -27,7 +27,8 @@
 
 #pragma mark - Public static methods
 + (CDOptions *) availableOptions {
-    return [CDOptions options].addOptionsToScope(@"global",
+    CDOptions *options = [CDOptions options];
+    return options.addOptionsToScope(@"global",
   @[
     // Add hidden developement (Xcode) option.
     CDOption.create(CDBoolean,  @"dev").hide(YES),
@@ -47,6 +48,7 @@
     CDOption.create(CDBoolean,  @"version"),
     CDOption.create(CDBoolean,  @"warnings").setDefaultValue(@"YES"),
     ]);
+
 }
 
 + (instancetype) control {

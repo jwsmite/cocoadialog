@@ -25,11 +25,69 @@
     return self;
 }
 
+- (void) showGeneralHelp {
+    NSArray *controls = [CDApplication availableControls].sortedAlphabetically;
+    NSArray <CDControlAlias *> *controlAliases = self.app.controlAliases;
+    
+    [self.terminal writeNewLine];
+    [self.terminal writeLine:@"cocoaDialog - Native macOS dialogs for command-line".white.bold];
+    [self.terminal writeNewLine];
+    [self.terminal writeLine:[NSString stringWithFormat:@"Usage: cocoadialog <%@> [%@]", 
+                             @"control".localizedLowercaseString, 
+                             @"options".localizedLowercaseString].white.bold];
+    [self.terminal writeNewLine];
+    
+    // Show available controls
+    [self.terminal writeLine:@"USAGE_HEADER_CONTROLS".localizedUppercaseString.white.bold.underline.stop];
+    [self.terminal writeNewLine];
+    
+    NSUInteger margin = 4;
+    NSUInteger terminalColumns = [self.terminal colsWithMinimum:80] - margin;
+    NSString *controlsString = [controls componentsJoinedByString:@", "].white.bold.stop;
+    controlsString = [controlsString wrapToLength:terminalColumns];
+    controlsString = [controlsString indentNewlinesWith:margin];
+    [self.terminal writeLine:[controlsString indent:margin]];
+    [self.terminal writeNewLine];
+    
+    // Show control aliases
+    if (controlAliases.count) {
+        [self.terminal writeNewLine];
+        [self.terminal writeLine:@"USAGE_HEADER_CONTROL_ALIASES".localizedUppercaseString.white.bold.underline.stop];
+        [self.terminal writeNewLine];
+
+        for (CDControlAlias *alias in controlAliases) {
+            NSMutableString *controlAliasesString = [NSMutableString string];
+            if ([alias.name isEqualToStringCaseInsensitive:@"about"]) {
+                [controlAliasesString appendFormat:@"%@\t\t - %@\n", alias.name.bold.white.stop, alias.usageDescription];
+            }
+            else {
+                [controlAliasesString appendFormat:@"%@ - Alias for: %@ %@", alias.name.white.bold.stop, alias.controlName.magenta, alias.usageDescription.magenta];
+            }
+            [self.terminal writeLine:[[[controlAliasesString wrapToLength:terminalColumns] indentNewlinesWith:margin * 2] indent:margin]];
+        }
+        [self.terminal writeNewLine];
+    }
+    
+    [self.terminal writeNewLine];
+    [self.terminal writeLine:@"For more information, visit: https://github.com/jwsmite/cocoadialog".white.bold];
+    [self.terminal writeNewLine];
+    [self.terminal writeLine:[NSString stringWithFormat:@"%@: %@", @"VERSION".localizedUppercaseString.white.bold.stop, self.app.version.cyan]];
+    [self.terminal writeLine:[NSString stringWithFormat:@"%@: %@", @"WEBSITE".localizedUppercaseString.white.bold.stop, self.app.baseUrl.cyan.stop]];
+    [self.terminal writeNewLine];
+}
+
 - (void) showUsage {
     NSArray <CDControlAlias *> *controlAliases = self.app.controlAliases;
     NSArray *controls = [CDApplication availableControls].sortedAlphabetically;
 
     CDControl* control = self.app.control;
+    
+    // If no control is initialized, show general help and exit
+    if (!control) {
+        [self showGeneralHelp];
+
+        exit(0);  // Make sure we exit!
+    }
 
     NSMutableString *controlUsage = [NSMutableString string];
     if (control.isBaseControl || control.name == nil) {
@@ -54,7 +112,7 @@
     }
 
     // Output usage as JSON.
-    if ([control.options[@"output"].stringValue isEqualToStringCaseInsensitive:@"json"]) {
+    if (control.options && [control.options[@"output"].stringValue isEqualToStringCaseInsensitive:@"json"]) {
         NSMutableDictionary *output = [NSMutableDictionary dictionary];
         output[@"controlAliases"] = controlAliases;
         output[@"controls"] = controls;
@@ -107,7 +165,15 @@
     }
 
     // Get all available options and put them in their necessary categories.
-    NSDictionary<NSString *, CDOptions *> *categories = [[control class] availableOptions].groupByScope;
+    NSDictionary<NSString *, CDOptions *> *categories = nil;
+    if (control && ![control isKindOfClass:[CDControl class]]) {
+        // Control is a subclass, get its specific options
+        categories = [[control class] availableOptions].groupByScope;
+    } else {
+        // Base control or nil, get global options only
+        categories = [CDControl availableOptions].groupByScope;
+    }
+
 
     // Print options for each scope.
     NSEnumerator *sortedScopes = [[NSArray arrayWithArray:[categories.allKeys sortedArrayUsingComparator:^NSComparisonResult(NSString *a, NSString *b) {
@@ -276,3 +342,4 @@
 }
 
 @end
+

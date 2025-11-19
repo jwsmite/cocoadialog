@@ -24,7 +24,7 @@
 
 #pragma mark - Properties
 - (NSString *) baseUrl {
-    return @"https://cocoadialog.com";
+    return @"https://github.com/jwsmite/cocoadialog";
 }
 
 - (NSString *) name {
@@ -109,12 +109,41 @@
     // Instantiate shared instances before anything else.
     _terminal = [CDTerminal sharedInstance];
 
+    // CHECK FOR HELP EARLY - BUT ONLY IF NO CONTROL SPECIFIED
+    NSArray *args = self.terminal.arguments;
+
+    // Only show general help if there's no control name at all
+    BOOL hasControlName = NO;
+    for (NSString *arg in args) {
+        if (![arg hasPrefix:@"-"] && ![arg isEqualToString:@"help"]) {
+            hasControlName = YES;
+            break;
+        }
+    }
+
+    if (args.count == 0 || 
+        ([args containsObject:@"help"] && !hasControlName) ||
+        ([args containsObject:@"--help"] && !hasControlName) ||
+        ([args containsObject:@"-h"] && !hasControlName)) {
+        [[CDUsage usage] showUsage];
+        exit(0);
+    }
+
+    // CHECK FOR VERSION EARLY
+    if ([args containsObject:@"version"] || 
+        [args containsObject:@"--version"] || 
+        [args containsObject:@"-v"]) {
+        [self.terminal writeLine:self.version];
+        exit(0);
+    }
+
     // Retrieve the control name and class based on terminal arguments.
     NSString *controlName = [self controlName];
     Class controlClass = [self controlClassForName:controlName];
 
     // Retrieve all the available options for the control and process the terminal arguments.
     _options = [controlClass availableOptions].processTerminalArguments();
+    
 
     // Show a warning if the control was deprecated.
     if (deprecatedFrom && deprecatedTo) {

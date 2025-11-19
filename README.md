@@ -88,6 +88,8 @@ result=$(cocoadialog inputbox \
   --button2 "Cancel")
 ```
 
+**Note:** This is just looking for the word "password", "pin", "passphrase" or "secret" (case insensitive) in your label/informative-text
+
 ### Form (Multi-field Input)
 
 ```bash
