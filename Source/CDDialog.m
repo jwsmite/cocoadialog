@@ -442,6 +442,11 @@
     if (view.hidden) {
         return 0.0f;
     }
+    
+    // Special case: controlView with no subviews should have 0 height
+    if (view == self.controlView && view.subviews.count == 0) {
+        return 0.0f;
+    }
 
     // Return a height constraint.
     for (NSLayoutConstraint *constraint in view.constraints) {
