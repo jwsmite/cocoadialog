@@ -485,7 +485,7 @@
         }
     }
     
-    self.terminal.dev(@"Height calc - header:%.0f msg:%.0f control:%.0f timeout:%.0f constraints:%.0f total:%.0f", headerHeight, messageHeight, controlViewHeight, timeoutHeight, constraintTotal, minHeight, nil);
+    self.terminal.dev(@"Height calc - header:%.0f msg:%.0f control:%.0f timeout:%.0f constraints:%.0f total:%.0f", headerHeight, messageHeight, controlViewHeight, timeoutHeight, constraintTotal, minHeight);
 
     return minHeight;
 }
