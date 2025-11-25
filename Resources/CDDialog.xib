@@ -67,7 +67,7 @@
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="Gya-6k-UHM" userLabel="controlView">
                         <rect key="frame" x="88" y="83" width="382" height="125"/>
                         <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="125" placeholder="YES" id="fIj-wl-9jd"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="0" placeholder="YES" id="fIj-wl-9jd"/>
                         </constraints>
                     </customView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59" userLabel="timeout" customClass="CDTextField">
