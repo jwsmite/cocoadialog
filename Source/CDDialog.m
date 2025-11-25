@@ -457,16 +457,22 @@
 - (float) getMinHeight {
     float minHeight = 0.0f;
 
-    minHeight += [self getViewHeight:self.header];
-    minHeight += [self getViewHeight:self.message];
-    minHeight += [self getViewHeight:self.controlView];
-    minHeight += [self getViewHeight:self.timeoutLabel];
+    float headerHeight = [self getViewHeight:self.header];
+    float messageHeight = [self getViewHeight:self.message];
+    float controlViewHeight = [self getViewHeight:self.controlView];
+    float timeoutHeight = [self getViewHeight:self.timeoutLabel];
+    
+    minHeight += headerHeight;
+    minHeight += messageHeight;
+    minHeight += controlViewHeight;
+    minHeight += timeoutHeight;
 
     if (self.options[@"buttons"].wasProvided) {
         minHeight += [self getViewHeight:self.button0] + 10.0f;
     }
 
     // Add in top constraints.
+    float constraintTotal = 0.0f;
     for (NSView *view in self.panel.contentView.subviews) {
         // Skip hidden views.
         if (view.hidden) {
@@ -474,9 +480,12 @@
         }
         NSArray <NSLayoutConstraint *> *constraints = [self.panel getConstraintsForView:view withAttribute:NSLayoutAttributeTop];
         for (NSLayoutConstraint *constraint in constraints) {
+            constraintTotal += constraint.constant;
             minHeight += constraint.constant;
         }
     }
+    
+    self.terminal.dev(@"Height calc - header:%.0f msg:%.0f control:%.0f timeout:%.0f constraints:%.0f total:%.0f", headerHeight, messageHeight, controlViewHeight, timeoutHeight, constraintTotal, minHeight, nil);
 
     return minHeight;
 }
