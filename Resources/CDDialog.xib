@@ -67,7 +67,7 @@
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="Gya-6k-UHM" userLabel="controlView">
                         <rect key="frame" x="88" y="83" width="382" height="125"/>
                         <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="125" placeholder="YES" id="fIj-wl-9jd"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="0" placeholder="YES" id="fIj-wl-9jd"/>
                         </constraints>
                     </customView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59" userLabel="timeout" customClass="CDTextField">
@@ -125,29 +125,29 @@ DQ
                     </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="5" firstAttribute="leading" secondItem="6" secondAttribute="trailing" constant="14" placeholder="YES" id="2Sn-xY-JpT"/>
-                    <constraint firstItem="6" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="20" placeholder="YES" id="4Lb-hf-FMC"/>
-                    <constraint firstItem="59" firstAttribute="top" secondItem="Gya-6k-UHM" secondAttribute="bottom" constant="8" placeholder="YES" id="7K1-ts-RlA"/>
-                    <constraint firstItem="40" firstAttribute="top" secondItem="4" secondAttribute="top" constant="30" placeholder="YES" id="858-7Z-y94"/>
-                    <constraint firstItem="6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="7" secondAttribute="trailing" constant="14" placeholder="YES" id="EAs-SK-ZzQ"/>
-                    <constraint firstItem="A7f-t6-z6Q" firstAttribute="top" secondItem="4" secondAttribute="top" constant="30" placeholder="YES" id="Kgr-AF-Mbi"/>
-                    <constraint firstItem="7" firstAttribute="leading" secondItem="4" secondAttribute="leading" constant="20" placeholder="YES" id="ORl-yY-Yf6"/>
-                    <constraint firstItem="9" firstAttribute="top" secondItem="A7f-t6-z6Q" secondAttribute="bottom" constant="8" placeholder="YES" id="Q1x-MR-Afj"/>
-                    <constraint firstItem="5" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="20" placeholder="YES" id="T3v-2e-bF5"/>
-                    <constraint firstAttribute="bottom" secondItem="5" secondAttribute="bottom" constant="20" placeholder="YES" id="VrF-kq-pBR"/>
+                    <constraint firstItem="5" firstAttribute="leading" secondItem="6" secondAttribute="trailing" constant="14" id="2Sn-xY-JpT"/>
+                    <constraint firstItem="6" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="12" id="4Lb-hf-FMC"/>
+                    <constraint firstItem="59" firstAttribute="top" secondItem="Gya-6k-UHM" secondAttribute="bottom" constant="8" id="7K1-ts-RlA"/>
+                    <constraint firstItem="40" firstAttribute="top" secondItem="4" secondAttribute="top" constant="20" placeholder="YES" id="858-7Z-y94"/>
+                    <constraint firstItem="6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="7" secondAttribute="trailing" constant="14" id="EAs-SK-ZzQ"/>
+                    <constraint firstItem="A7f-t6-z6Q" firstAttribute="top" secondItem="4" secondAttribute="top" constant="40" id="Kgr-AF-Mbi"/>
+                    <constraint firstItem="7" firstAttribute="leading" secondItem="4" secondAttribute="leading" constant="20" id="ORl-yY-Yf6"/>
+                    <constraint firstItem="9" firstAttribute="top" secondItem="A7f-t6-z6Q" secondAttribute="bottom" constant="12" id="Q1x-MR-Afj"/>
+                    <constraint firstItem="5" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="12" id="T3v-2e-bF5"/>
+                    <constraint firstAttribute="bottom" secondItem="5" secondAttribute="bottom" constant="16" id="VrF-kq-pBR"/>
                     <constraint firstItem="9" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" placeholder="YES" id="WAJ-UU-Jaz"/>
-                    <constraint firstAttribute="bottom" secondItem="7" secondAttribute="bottom" constant="20" placeholder="YES" id="WSe-4X-viB"/>
-                    <constraint firstAttribute="trailing" secondItem="5" secondAttribute="trailing" constant="20" placeholder="YES" id="YmK-wb-Js2"/>
+                    <constraint firstAttribute="bottom" secondItem="7" secondAttribute="bottom" constant="16" id="WSe-4X-viB"/>
+                    <constraint firstAttribute="trailing" secondItem="5" secondAttribute="trailing" constant="20" id="YmK-wb-Js2"/>
                     <constraint firstItem="A7f-t6-z6Q" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" placeholder="YES" id="axD-Qs-Y5h"/>
                     <constraint firstAttribute="trailing" secondItem="59" secondAttribute="trailing" constant="20" placeholder="YES" id="b0h-3W-mhd"/>
                     <constraint firstItem="59" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" placeholder="YES" id="dYW-MF-zhI"/>
-                    <constraint firstItem="7" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="20" placeholder="YES" id="dxO-QN-QQa"/>
-                    <constraint firstAttribute="bottom" secondItem="6" secondAttribute="bottom" constant="20" placeholder="YES" id="kFe-XO-aEI"/>
+                    <constraint firstItem="7" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="12" id="dxO-QN-QQa"/>
+                    <constraint firstAttribute="bottom" secondItem="6" secondAttribute="bottom" constant="16" id="kFe-XO-aEI"/>
                     <constraint firstItem="Gya-6k-UHM" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" placeholder="YES" id="l0Z-SO-Ple"/>
                     <constraint firstAttribute="trailing" secondItem="Gya-6k-UHM" secondAttribute="trailing" constant="20" placeholder="YES" id="oNH-AM-Ddy"/>
                     <constraint firstAttribute="trailing" secondItem="A7f-t6-z6Q" secondAttribute="trailing" constant="20" placeholder="YES" id="omJ-Pc-ACv"/>
                     <constraint firstItem="40" firstAttribute="leading" secondItem="4" secondAttribute="leading" constant="20" placeholder="YES" id="tpI-cU-2jv"/>
-                    <constraint firstItem="Gya-6k-UHM" firstAttribute="top" secondItem="9" secondAttribute="bottom" constant="8" placeholder="YES" id="w7L-os-guT"/>
+                    <constraint firstItem="Gya-6k-UHM" firstAttribute="top" secondItem="9" secondAttribute="bottom" constant="8" id="w7L-os-guT"/>
                     <constraint firstAttribute="trailing" secondItem="9" secondAttribute="trailing" constant="20" placeholder="YES" id="yX7-nq-qea"/>
                 </constraints>
             </view>
