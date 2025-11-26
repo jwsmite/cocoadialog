@@ -442,11 +442,6 @@
     if (view.hidden) {
         return 0.0f;
     }
-    
-    // Special case: controlView with no subviews should have 0 height
-    if (view == self.controlView && view.subviews.count == 0) {
-        return 0.0f;
-    }
 
     // Return a height constraint.
     for (NSLayoutConstraint *constraint in view.constraints) {
@@ -462,13 +457,21 @@
 - (float) getMinHeight {
     float minHeight = 0.0f;
 
-    minHeight += [self getViewHeight:self.header];
-    minHeight += [self getViewHeight:self.message];
-    minHeight += [self getViewHeight:self.controlView];
-    minHeight += [self getViewHeight:self.timeoutLabel];
+    float headerHeight = [self getViewHeight:self.header];
+    minHeight += headerHeight;
+
+    float messageHeight = [self getViewHeight:self.message];
+    minHeight += messageHeight;
+
+    float controlHeight = [self getViewHeight:self.controlView];
+    minHeight += controlHeight;
+
+    float timeoutHeight = [self getViewHeight:self.timeoutLabel];
+    minHeight += timeoutHeight;
 
     if (self.options[@"buttons"].wasProvided) {
-        minHeight += [self getViewHeight:self.button0] + 10.0f;
+        float buttonHeight = [self getViewHeight:self.button0] + 10.0f;
+        minHeight += buttonHeight;
     }
 
     // Add in top constraints.
@@ -488,7 +491,11 @@
 
 - (void) updateMinSize {
     NSSize minSize = self.panel.contentMinSize;
+    
+    // Set reasonable minimum dimensions
+    minSize.width = 490.0f;  // Reasonable minimum width for dialog
     minSize.height = [self getMinHeight];
+    
     self.panel.contentMinSize = minSize;
 }
 
@@ -497,8 +504,7 @@
         self.terminal.error(@"Control panel failed to bind.", nil).exit(CDTerminalExitCodeControlFailure);
     }
 
-    // Update panel's constraints.
-    [self.panel setContentSize:NSMakeSize(self.panel.contentView.frame.size.width, self.panel.contentView.frame.size.height)];
+    // DON'T set content size yet - let Auto Layout work first
     self.panel.viewsNeedDisplay = YES;
     [self.panel updateConstraintsIfNeeded];
 
@@ -507,9 +513,18 @@
 
     [self updateMinSize];
 
-    // Resize.
+    // Let Auto Layout calculate the proper size
     NSScreen *screen = self.getScreen;
-    NSSize size = self.panel.contentView.frame.size;
+    
+    // Force Auto Layout to calculate sizes
+    [self.panel.contentView setNeedsLayout:YES];
+    [self.panel.contentView layoutSubtreeIfNeeded];
+    
+    // Ask Auto Layout what size it wants to be
+    NSSize fittingSize = [self.panel.contentView fittingSize];
+    
+    // Start with Auto Layout's calculated size
+    NSSize size = fittingSize;
 
     float width, height;
     if (self.options[@"width"].wasProvided) {
@@ -534,6 +549,11 @@
 
     // Set the new panel size.
     [self.panel setContentSize:size];
+    
+    // CRITICAL: Force Auto Layout to reposition content after resize
+    [self.panel.contentView setNeedsLayout:YES];
+    [self.panel.contentView layoutSubtreeIfNeeded];
+    [self.panel displayIfNeeded];
 
     // Determine whether or not panel should float.
     self.panel.floatingPanel = self.options[@"float"].boolValue;
@@ -586,6 +606,7 @@
 
     // Set the panel's new frame origins.
     [self.panel setFrameOrigin:NSMakePoint(left, top)];
+    
     [self.panel makeKeyAndOrderFront:nil];
 }
 
@@ -714,7 +735,7 @@
     float width = label.frame.size.width;
     
     // Use the label's cell to calculate the required height
-    NSSize maxSize = NSMakeSize(width, CGFLOAT_MAX);  // CHANGED: constraint → maxSize
+    NSSize maxSize = NSMakeSize(width, CGFLOAT_MAX);
     NSSize size = [label.cell cellSizeForBounds:NSMakeRect(0, 0, maxSize.width, maxSize.height)];
     float height = size.height;
 
@@ -723,16 +744,13 @@
         if (constraint.firstAttribute == NSLayoutAttributeHeight) {
             if (constraint.constant != height) {
                 constraint.constant = height;
-                [label updateConstraints];
+                [label setNeedsLayout:YES];
             }
             break;
         }
     }
 
-    // Set label's new height.
-    if (label.frame.size.height != height) {
-        [label setFrameSize:NSMakeSize(label.frame.size.width, height)];
-    }
+    // DON'T manually set frame - let Auto Layout handle it via constraints
 
     [label displayIfNeeded];
 }
