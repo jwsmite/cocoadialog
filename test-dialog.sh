@@ -29,12 +29,71 @@ case "$1" in
             --label "City:" --label "State:" --label "Zip:" --label "Country:" \
             --button1 "Submit" --button2 "Cancel"
         ;;
-    *)
-        echo "Usage: $0 {simple|long|form}"
+    "dropdown")
+        "$CD" dropdown --title "Select Environment" \
+            --text "Choose deployment target:" \
+            --items "Development" "Staging" "Production" "QA" "Demo" \
+            --button1 "Deploy" --button2 "Cancel"
+        ;;
+    "slider")
+        "$CD" slider --title "Volume Control" \
+            --text "Adjust audio volume:" \
+            --min 0 --max 100 --value 50 \
+            --always-show-value \
+            --button1 "Set" --button2 "Cancel"
+        ;;
+    "textbox")
+        "$CD" textbox --title "Comments" \
+            --text "Please provide feedback:" \
+            --informative-text "Enter your comments below (supports multiple lines)" \
+            --editable \
+            --button1 "Submit" --button2 "Cancel"
+        ;;
+    "progressbar")
+        echo "Testing indeterminate progress..."
+        "$CD" progressbar --title "Processing" --text "Please wait..." --indeterminate --stoppable &
+        PID=$!
+        sleep 3
+        kill $PID 2>/dev/null
+        
         echo ""
-        echo "  simple - Simple msgbox test"
-        echo "  long   - Long text wrapping test"
-        echo "  form   - 8-field form test"
+        echo "Testing progress with percentage..."
+        (
+            echo "0 Starting..."
+            sleep 1
+            echo "25 Processing files..."
+            sleep 1
+            echo "50 Half done..."
+            sleep 1
+            echo "75 Almost there..."
+            sleep 1
+            echo "100 Complete!"
+        ) | "$CD" progressbar --title "Progress" --text "Working..." --stoppable
+        ;;
+    "fileselect")
+        "$CD" fileselect --title "Choose a File" \
+            --with-extensions txt md pdf \
+            --button1 "Open"
+        ;;
+    "filesave")
+        "$CD" filesave --title "Save Document" \
+            --with-file "untitled.txt" \
+            --button1 "Save"
+        ;;
+    *)
+        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave}"
+        echo ""
+        echo "  simple      - Simple msgbox test"
+        echo "  long        - Long text wrapping test"
+        echo "  form        - 8-field form test"
+        echo "  dropdown    - Dropdown menu test"
+        echo "  slider      - Slider input test"
+        echo "  textbox     - Multi-line text input"
+        echo "  progressbar - Progress indicator test"
+        echo "  fileselect  - File selection dialog"
+        echo "  filesave    - Save file dialog"
+        echo ""
+        echo "Note: checkbox and radio dialogs require matrix NIB support (not currently available)"
         exit 1
         ;;
 esac
