@@ -6,12 +6,21 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-2" userLabel="File's Owner" customClass="CDProgressbarView">
+            <connections>
+                <outlet property="contentView" destination="c22-O7-iKe" id="contentView-outlet"/>
+                <outlet property="primaryLabel" destination="jhL-CS-K9Q" id="w8i-av-tTw"/>
+                <outlet property="progressbar" destination="dN9-I2-iNh" id="g1g-wU-jeU"/>
+                <outlet property="progressbarBottomConstraint" destination="R7W-bt-M2L" id="ZKV-PM-RaQ"/>
+                <outlet property="progressbarTopConstraint" destination="Ojd-od-O4h" id="zBw-tT-2T7"/>
+                <outlet property="secondaryLabel" destination="flY-PJ-EjA" id="47i-8a-HT4"/>
+                <outlet property="stopButton" destination="nOy-ny-cWp" id="C3Y-bf-Na4"/>
+            </connections>
+        </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView id="c22-O7-iKe" userLabel="CDProgressbarView" customClass="CDProgressbarView">
+        <customView id="c22-O7-iKe" userLabel="CDProgressbarView">
             <rect key="frame" x="0.0" y="0.0" width="357" height="54"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jhL-CS-K9Q" userLabel="primaryLabel">
                     <rect key="frame" x="52" y="34" width="275" height="14"/>
@@ -21,10 +30,11 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <progressIndicator wantsLayer="YES" canDrawConcurrently="YES" verticalHuggingPriority="750" maxValue="100" doubleValue="18" bezeled="NO" controlSize="small" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="dN9-I2-iNh" userLabel="progressbar">
+                <progressIndicator wantsLayer="YES" canDrawConcurrently="YES" verticalHuggingPriority="750" maxValue="100" doubleValue="18" controlSize="small" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="dN9-I2-iNh" userLabel="progressbar">
                     <rect key="frame" x="52" y="20" width="273" height="12"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="12" id="Z3i-zC-JpV"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="progressbar-minWidth"/>
                     </constraints>
                 </progressIndicator>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="flY-PJ-EjA" userLabel="secondaryLabel">
@@ -57,25 +67,17 @@
                 <constraint firstItem="flY-PJ-EjA" firstAttribute="leading" secondItem="dN9-I2-iNh" secondAttribute="leading" constant="2" id="7HM-Bv-PQe"/>
                 <constraint firstItem="nOy-ny-cWp" firstAttribute="centerY" secondItem="dN9-I2-iNh" secondAttribute="centerY" id="Oaz-bw-E3C"/>
                 <constraint firstItem="dN9-I2-iNh" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="22" id="Ojd-od-O4h"/>
-                <constraint firstAttribute="bottom" secondItem="dN9-I2-iNh" secondAttribute="bottom" constant="20" id="R7W-bt-M2L"/>
+                <constraint firstAttribute="bottom" secondItem="dN9-I2-iNh" secondAttribute="bottom" constant="40" id="R7W-bt-M2L"/>
                 <constraint firstAttribute="trailing" secondItem="nOy-ny-cWp" secondAttribute="trailing" constant="10" id="Uy0-Wc-OgB"/>
-                <constraint firstItem="nOy-ny-cWp" firstAttribute="leading" secondItem="dN9-I2-iNh" secondAttribute="trailing" constant="5" id="YBm-1b-PlZ"/>
                 <constraint firstItem="ETs-cA-3Ch" firstAttribute="centerY" secondItem="dN9-I2-iNh" secondAttribute="centerY" id="aIU-qC-oMZ"/>
                 <constraint firstItem="flY-PJ-EjA" firstAttribute="top" secondItem="dN9-I2-iNh" secondAttribute="bottom" constant="2" id="bb1-m3-TYF"/>
                 <constraint firstItem="ETs-cA-3Ch" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="10" id="lQ2-jj-ftm"/>
                 <constraint firstItem="dN9-I2-iNh" firstAttribute="top" secondItem="jhL-CS-K9Q" secondAttribute="bottom" constant="2" id="m95-zu-bP5"/>
                 <constraint firstItem="dN9-I2-iNh" firstAttribute="leading" secondItem="ETs-cA-3Ch" secondAttribute="trailing" constant="10" id="n0C-dA-gFi"/>
-                <constraint firstItem="flY-PJ-EjA" firstAttribute="trailing" secondItem="dN9-I2-iNh" secondAttribute="trailing" id="vRw-it-z4N"/>
-                <constraint firstItem="jhL-CS-K9Q" firstAttribute="trailing" secondItem="dN9-I2-iNh" secondAttribute="trailing" id="zuh-TN-cBP"/>
+                <constraint firstItem="nOy-ny-cWp" firstAttribute="leading" secondItem="flY-PJ-EjA" secondAttribute="trailing" constant="5" id="stop-after-label"/>
+                <constraint firstItem="nOy-ny-cWp" firstAttribute="leading" secondItem="jhL-CS-K9Q" secondAttribute="trailing" constant="5" id="stop-after-primary"/>
+                <constraint firstItem="nOy-ny-cWp" firstAttribute="leading" secondItem="dN9-I2-iNh" secondAttribute="trailing" constant="5" id="stop-after-progressbar"/>
             </constraints>
-            <connections>
-                <outlet property="primaryLabel" destination="jhL-CS-K9Q" id="w8i-av-tTw"/>
-                <outlet property="progressbar" destination="dN9-I2-iNh" id="g1g-wU-jeU"/>
-                <outlet property="progressbarBottomConstraint" destination="R7W-bt-M2L" id="ZKV-PM-RaQ"/>
-                <outlet property="progressbarTopConstraint" destination="Ojd-od-O4h" id="zBw-tT-2T7"/>
-                <outlet property="secondaryLabel" destination="flY-PJ-EjA" id="47i-8a-HT4"/>
-                <outlet property="stopButton" destination="nOy-ny-cWp" id="C3Y-bf-Na4"/>
-            </connections>
             <point key="canvasLocation" x="77.5" y="77"/>
         </customView>
     </objects>
