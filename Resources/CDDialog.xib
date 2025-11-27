@@ -67,7 +67,7 @@
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="Gya-6k-UHM" userLabel="controlView">
                         <rect key="frame" x="88" y="83" width="382" height="125"/>
                         <constraints>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="0" placeholder="YES" id="fIj-wl-9jd"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="0" id="fIj-wl-9jd"/>
                         </constraints>
                     </customView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59" userLabel="timeout" customClass="CDTextField">
@@ -143,8 +143,8 @@ DQ
                     <constraint firstItem="59" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" placeholder="YES" id="dYW-MF-zhI"/>
                     <constraint firstItem="7" firstAttribute="top" secondItem="59" secondAttribute="bottom" constant="12" id="dxO-QN-QQa"/>
                     <constraint firstAttribute="bottom" secondItem="6" secondAttribute="bottom" constant="16" id="kFe-XO-aEI"/>
-                    <constraint firstItem="Gya-6k-UHM" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" placeholder="YES" id="l0Z-SO-Ple"/>
-                    <constraint firstAttribute="trailing" secondItem="Gya-6k-UHM" secondAttribute="trailing" constant="20" placeholder="YES" id="oNH-AM-Ddy"/>
+                    <constraint firstItem="Gya-6k-UHM" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="20" id="l0Z-SO-Ple"/>
+                    <constraint firstAttribute="trailing" secondItem="Gya-6k-UHM" secondAttribute="trailing" constant="20" id="oNH-AM-Ddy"/>
                     <constraint firstAttribute="trailing" secondItem="A7f-t6-z6Q" secondAttribute="trailing" constant="20" placeholder="YES" id="omJ-Pc-ACv"/>
                     <constraint firstItem="40" firstAttribute="leading" secondItem="4" secondAttribute="leading" constant="20" placeholder="YES" id="tpI-cU-2jv"/>
                     <constraint firstItem="Gya-6k-UHM" firstAttribute="top" secondItem="9" secondAttribute="bottom" constant="8" id="w7L-os-guT"/>
