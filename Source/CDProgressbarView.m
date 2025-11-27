@@ -9,6 +9,10 @@
 
 @implementation CDProgressbarView
 
+- (void) initView {
+    // Initialization if needed
+}
+
 - (void) setLabels:(NSArray <NSString *> *)labels {
     _labels = labels;
 //    NSString *primaryLabel = labels[0] ?: nil;
