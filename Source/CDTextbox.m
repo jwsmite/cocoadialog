@@ -34,6 +34,15 @@
     [super createControl];
     
     self.textView = [[CDTextView alloc] initWithDialog:self];
+    
+    // Update the controlView height constraint to match the text view's content
+    for (NSLayoutConstraint *constraint in self.controlView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            // Set height to match the textView's contentView height (272px from XIB)
+            constraint.constant = self.textView.contentView.frame.size.height;
+            break;
+        }
+    }
 	
 	// Set first responder
 	// Why doesn't this work for the button?
