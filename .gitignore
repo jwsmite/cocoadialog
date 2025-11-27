@@ -24,3 +24,4 @@ Podfile.lock
 
 # Building process (Node.js)
 /Build
+default.profraw
