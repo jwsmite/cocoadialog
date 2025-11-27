@@ -403,6 +403,29 @@
     // Immediately remove image if not set and then return.
     if (anImage == nil) {
         self.iconView.hidden = YES;
+        
+        // Move leading constraints from icon to left edge for all views that were positioned relative to icon
+        // This allows content to shift left when icon is hidden
+        NSArray *views = @[self.header, self.message, self.controlView];
+        for (NSView *view in views) {
+            NSArray *constraints = [self.panel getConstraintsForView:view withAttribute:NSLayoutAttributeLeading];
+            for (NSLayoutConstraint *constraint in constraints) {
+                if (constraint.secondItem == self.iconView && constraint.secondAttribute == NSLayoutAttributeTrailing) {
+                    // Remove the constraint linking to the icon
+                    [self.panel.contentView removeConstraint:constraint];
+                    // Add new constraint linking to left edge
+                    NSLayoutConstraint *newConstraint = [NSLayoutConstraint constraintWithItem:view
+                                                                                     attribute:NSLayoutAttributeLeading
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.panel.contentView
+                                                                                     attribute:NSLayoutAttributeLeading
+                                                                                    multiplier:1.0
+                                                                                      constant:20.0];
+                    [self.panel.contentView addConstraint:newConstraint];
+                }
+            }
+        }
+        
         [self.panel updateConstraintsIfNeeded];
         return;
     }
@@ -446,6 +469,22 @@
     // Return a height constraint.
     for (NSLayoutConstraint *constraint in view.constraints) {
         if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            // If the constraint is 0 but there are subviews, measure the subviews instead
+            if (constraint.constant == 0.0f && view.subviews.count > 0) {
+                // Find the tallest subview
+                float maxHeight = 0.0f;
+                for (NSView *subview in view.subviews) {
+                    if (!subview.hidden) {
+                        float subviewHeight = subview.frame.size.height;
+                        if (subviewHeight > maxHeight) {
+                            maxHeight = subviewHeight;
+                        }
+                    }
+                }
+                if (maxHeight > 0.0f) {
+                    return maxHeight;
+                }
+            }
             return constraint.constant;
         }
     }
