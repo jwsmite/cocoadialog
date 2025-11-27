@@ -19,14 +19,13 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <scrollView wantsLayer="YES" fixedFrame="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gnT-KI-RuU">
+                <scrollView wantsLayer="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gnT-KI-RuU">
                     <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <clipView key="contentView" ambiguous="YES" id="ynA-gn-ZPG">
+                    <clipView key="contentView" id="ynA-gn-ZPG">
                         <rect key="frame" x="1" y="1" width="478" height="270"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView ambiguous="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" grammarChecking="YES" smartInsertDelete="YES" id="YRU-RK-lEM">
+                            <textView importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="bar" incrementalSearchingEnabled="YES" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" grammarChecking="YES" smartInsertDelete="YES" id="YRU-RK-lEM">
                                 <rect key="frame" x="0.0" y="-0.5" width="478" height="270"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -47,6 +46,12 @@
                     </scroller>
                 </scrollView>
             </subviews>
+            <constraints>
+                <constraint firstItem="gnT-KI-RuU" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="scroll-leading"/>
+                <constraint firstItem="gnT-KI-RuU" firstAttribute="trailing" secondItem="c22-O7-iKe" secondAttribute="trailing" id="scroll-trailing"/>
+                <constraint firstItem="gnT-KI-RuU" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="scroll-top"/>
+                <constraint firstItem="gnT-KI-RuU" firstAttribute="bottom" secondItem="c22-O7-iKe" secondAttribute="bottom" id="scroll-bottom"/>
+            </constraints>
             <connections>
                 <outlet property="scrollView" destination="gnT-KI-RuU" id="GGm-L3-bYB"/>
                 <outlet property="textView" destination="YRU-RK-lEM" id="Bz1-gS-crX"/>
