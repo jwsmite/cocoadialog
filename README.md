@@ -118,7 +118,8 @@ if [[ $button == "0" ]]; then
     # Password field automatically appears as secure (dots)
 fi
 ```
-![form preview](https://github.com/jwsmite/cocoadialog/blob/master/Screenshots/form.png) 
+
+![form preview](https://github.com/jwsmite/cocoadialog/blob/master/Screenshots/form.png)
 
 **Note**: The form control automatically detects fields that should be secure (password, secret, pin, passphrase) and displays them as password fields.
 
@@ -139,6 +140,29 @@ if [[ $button == "0" ]]; then
     echo "Deploying to: $selection"
 fi
 ```
+
+### Textbox (Multi-line Input)
+
+```bash
+# Get multi-line text input
+result=$(cocoadialog textbox \
+  --title "Comments" \
+  --text "Please provide feedback:" \
+  --informative-text "Enter your comments below (supports multiple lines)" \
+  --editable \
+  --button1 "Submit" \
+  --button2 "Cancel")
+
+button=$(echo "$result" | grep "^button:" | awk '{print $2}')
+text=$(echo "$result" | grep "^value:" | cut -d' ' -f2-)
+
+if [[ $button == "0" ]]; then
+    echo "User submitted:"
+    echo "$text"
+fi
+```
+
+**Note**: Use `--editable` to make the textbox accept user input. Without it, the textbox is read-only (useful for displaying long text).
 
 ### File Selection
 
@@ -255,19 +279,19 @@ value: <data>
 
 ## Available Controls
 
-| Control         | Description                        |
-| --------------- | ---------------------------------- |
-| `msgbox`      | Simple message dialog with buttons |
-| `inputbox`    | Single-line text input             |
-| `form`        | Multi-field input form             |
-| `dropdown`    | Dropdown/popup menu selection      |
-| `checkbox`    | Multiple selection checkboxes      |
-| `radio`       | Single selection radio buttons     |
-| `fileselect`  | File/folder picker                 |
-| `filesave`    | Save file dialog                   |
-| `textbox`     | Multi-line text input              |
-| `progressbar` | Progress indicator                 |
-| `slider`      | Numeric slider input               |
+| Control         | Description                                  |
+| --------------- | -------------------------------------------- |
+| `msgbox`      | Simple message dialog with buttons           |
+| `inputbox`    | Single-line text input                       |
+| `form`        | Multi-field input form                       |
+| `dropdown`    | Dropdown/popup menu selection                |
+| `checkbox`    | Multiple selection checkboxes - NOT WORKING  |
+| `radio`       | Single selection radio buttons - NOT WORKING |
+| `fileselect`  | File/folder picker                           |
+| `filesave`    | Save file dialog                             |
+| `textbox`     | Multi-line text input                        |
+| `progressbar` | Progress indicator                           |
+| `slider`      | Numeric slider input                         |
 
 Use `cocoadialog help` to see all available controls and options.
 
