@@ -99,6 +99,21 @@
     }
 
     self.slider = [[CDSliderView alloc] initWithDialog:self];
+    
+    // Configure the slider view with our values
+    self.slider.min = self.min;
+    self.slider.max = self.max;
+    self.slider.value = self.value;
+    self.slider.emptyValue = self.emptyValue;
+    self.slider.ticks = self.ticks;
+    self.slider.sticky = self.options[@"sticky"].boolValue;
+    self.slider.alwaysShowValue = self.options[@"always-show-value"].boolValue;
+    
+    // Configure the actual NSSlider control
+    self.slider.slider.minValue = self.min;
+    self.slider.slider.maxValue = self.max;
+    self.slider.slider.doubleValue = self.value;
+    self.slider.slider.numberOfTickMarks = self.ticks;
 }
 
 @end
