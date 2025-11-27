@@ -23,20 +23,36 @@
             dialog.terminal.error(@"Control view does not contain a XIB named: %@", [self className].doubleQuote.white.bold, nil).exit(CDTerminalExitCodeControlFailure);
         }
 
-        if (self.contentView == nil) {
-            dialog.terminal.error(@"The %@ control view has not properly bound the %@ property.", [self className].doubleQuote.white.bold, @"contentView".doubleQuote.white.bold, nil).exit(CDTerminalExitCodeControlFailure);
-        }
-
-        self.autoresizingMask = NSViewMinXMargin | NSViewMaxXMargin | NSViewMinYMargin | NSViewMaxYMargin | NSViewWidthSizable | NSViewHeightSizable;
-
-        [self addSubview:self.contentView];
-        self.contentView.frame = self.bounds;
+        // Use Auto Layout instead of autoresizing masks
+        self.translatesAutoresizingMaskIntoConstraints = NO;
 
         // Initialize the view.
         [self initView];
 
-        // Add this view to the control view.
-        [self.dialog.controlView addSubview:self];
+        // Handle two patterns:
+        // 1. New pattern: XIB has a contentView outlet (CDSliderView, CDTextView)
+        //    - Add contentView directly to controlView to avoid extra wrapper layer blocking events
+        // 2. Old pattern: XIB uses the customView itself as content (CDProgressbarView)
+        //    - Add self to controlView
+        if (self.contentView != nil) {
+            self.contentView.translatesAutoresizingMaskIntoConstraints = NO;
+            [self.dialog.controlView addSubview:self.contentView];
+            
+            // Pin contentView to fill the controlView
+            [self.contentView.leadingAnchor constraintEqualToAnchor:self.dialog.controlView.leadingAnchor].active = YES;
+            [self.contentView.trailingAnchor constraintEqualToAnchor:self.dialog.controlView.trailingAnchor].active = YES;
+            [self.contentView.topAnchor constraintEqualToAnchor:self.dialog.controlView.topAnchor].active = YES;
+            [self.contentView.bottomAnchor constraintEqualToAnchor:self.dialog.controlView.bottomAnchor].active = YES;
+        } else {
+            // Old pattern: add self to controlView
+            [self.dialog.controlView addSubview:self];
+            
+            // Pin self to fill the controlView
+            [self.leadingAnchor constraintEqualToAnchor:self.dialog.controlView.leadingAnchor].active = YES;
+            [self.trailingAnchor constraintEqualToAnchor:self.dialog.controlView.trailingAnchor].active = YES;
+            [self.topAnchor constraintEqualToAnchor:self.dialog.controlView.topAnchor].active = YES;
+            [self.bottomAnchor constraintEqualToAnchor:self.dialog.controlView.bottomAnchor].active = YES;
+        }
     }
     return self;
 }
