@@ -80,8 +80,22 @@ case "$1" in
             --with-file "untitled.txt" \
             --button1 "Save"
         ;;
+    "checkbox")
+        "$CD" checkbox --title "Select Options" \
+            --text "Choose all that apply:" \
+            --items "Email notifications" "SMS alerts" "Push notifications" "Newsletter" \
+            --checked 0 2 \
+            --button1 "Save" --button2 "Cancel"
+        ;;
+    "radio")
+        "$CD" radio --title "Choose One" \
+            --text "Select your preferred contact method:" \
+            --items "Email" "Phone" "Text Message" "Postal Mail" \
+            --selected 0 \
+            --button1 "Continue" --button2 "Cancel"
+        ;;
     *)
-        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave}"
+        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave|checkbox|radio}"
         echo ""
         echo "  simple      - Simple msgbox test"
         echo "  long        - Long text wrapping test"
@@ -92,8 +106,9 @@ case "$1" in
         echo "  progressbar - Progress indicator test"
         echo "  fileselect  - File selection dialog"
         echo "  filesave    - Save file dialog"
+        echo "  checkbox    - Multiple selection checkboxes"
+        echo "  radio       - Exclusive selection radio buttons"
         echo ""
-        echo "Note: checkbox and radio dialogs require matrix NIB support (not currently available)"
         exit 1
         ;;
 esac
