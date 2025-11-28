@@ -60,6 +60,8 @@
     // Determine if the control added cells to the matrix.
     if (self.matrix.cells.count > 0) {
         [self.matrix sizeToCells];
+        [self.matrix invalidateIntrinsicContentSize];
+        [self.matrix.superview setNeedsLayout:YES];
         [self.matrix.superview setNeedsDisplay:YES];
     }
     else {

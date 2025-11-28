@@ -97,6 +97,9 @@
 		A7FC52CA1F7FC7E300DA9F5E /* CDSliderView.h in Headers */ = {isa = PBXBuildFile; fileRef = A7FC52C91F7FC7E300DA9F5E /* CDSliderView.h */; };
 		A7FC52CC1F8121F900DA9F5E /* CDTextView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A7FC52CB1F8121F900DA9F5E /* CDTextView.xib */; };
 		A7FC52CE1F81220F00DA9F5E /* CDTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = A7FC52CD1F81220F00DA9F5E /* CDTextView.m */; };
+		CD16E63303A94C5D9AB24814 /* CDCheckboxView.h in Headers */ = {isa = PBXBuildFile; fileRef = 0CF4B200D1074264B1556161 /* CDCheckboxView.h */; };
+		940616751A534876B677D81B /* CDCheckboxView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8EF8061F0C1D4F778A72E0FC /* CDCheckboxView.m */; };
+		B2C884BC30254EA1B4FF1FF1 /* CDCheckboxView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 48E0B28B0B0C4A4BB7E38D44 /* CDCheckboxView.xib */; };
 		A7FC52D01F81222F00DA9F5E /* CDTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = A7FC52CF1F81221900DA9F5E /* CDTextView.h */; };
 		C05B25BAF933D30A3EB73B17 /* libPods-cocoadialog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E8FDB69E191B5158E1872F21 /* libPods-cocoadialog.a */; };
 /* End PBXBuildFile section */
@@ -230,6 +233,9 @@
 		A7FC52CB1F8121F900DA9F5E /* CDTextView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CDTextView.xib; sourceTree = "<group>"; };
 		A7FC52CD1F81220F00DA9F5E /* CDTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDTextView.m; sourceTree = "<group>"; };
 		A7FC52CF1F81221900DA9F5E /* CDTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDTextView.h; sourceTree = "<group>"; };
+		0CF4B200D1074264B1556161 /* CDCheckboxView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CDCheckboxView.h; sourceTree = "<group>"; };
+		8EF8061F0C1D4F778A72E0FC /* CDCheckboxView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CDCheckboxView.m; sourceTree = "<group>"; };
+		48E0B28B0B0C4A4BB7E38D44 /* CDCheckboxView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CDCheckboxView.xib; sourceTree = "<group>"; };
 		C182FE8D76FB47B679DF289F /* Pods-cocoadialog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cocoadialog.debug.xcconfig"; path = "Pods/Target Support Files/Pods-cocoadialog/Pods-cocoadialog.debug.xcconfig"; sourceTree = "<group>"; };
 		E8FDB69E191B5158E1872F21 /* libPods-cocoadialog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-cocoadialog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -376,6 +382,7 @@
 				A7C95CBB1F7CB5CB009000CE /* Info.plist */,
 				A71EC8C31F88B0E500DB31D8 /* Locale.plist */,
 				A7C95CC31F7CB5CB009000CE /* Images.xcassets */,
+				48E0B28B0B0C4A4BB7E38D44 /* CDCheckboxView.xib */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -460,6 +467,8 @@
 				A7EC0BCA1F7F2CBC00EFF605 /* NSString+CDColor.m */,
 				A7EC0BCB1F7F2CBC00EFF605 /* NSString+CDString.h */,
 				A7EC0BCC1F7F2CBC00EFF605 /* NSString+CDString.m */,
+				0CF4B200D1074264B1556161 /* CDCheckboxView.h */,
+				8EF8061F0C1D4F778A72E0FC /* CDCheckboxView.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -509,6 +518,7 @@
 				A7EC0C261F7F2CBC00EFF605 /* CDProgressbar.h in Headers */,
 				A7FC52CA1F7FC7E300DA9F5E /* CDSliderView.h in Headers */,
 				A7FC52D01F81222F00DA9F5E /* CDTextView.h in Headers */,
+				CD16E63303A94C5D9AB24814 /* CDCheckboxView.h in Headers */,
 				A7EC0C331F7F2CBC00EFF605 /* CDTextbox.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -597,6 +607,7 @@
 			files = (
 				A71EC8C11F88B0E500DB31D8 /* Locale.plist in Resources */,
 				A7FC52CC1F8121F900DA9F5E /* CDTextView.xib in Resources */,
+				B2C884BC30254EA1B4FF1FF1 /* CDCheckboxView.xib in Resources */,
 				A739834D1F7CBB3600867E08 /* CDDialog.xib in Resources */,
 				A7C95D091F7CB5CB009000CE /* Images.xcassets in Resources */,
 				A74A1C3A1F86E9C7006289A8 /* Acknowledgements.md in Resources */,
@@ -654,6 +665,7 @@
 				A754FE511F89D31B008F0BC3 /* CDIcon.m in Sources */,
 				A7EC0C3B1F7F2CBC00EFF605 /* CDJson.m in Sources */,
 				A7FC52CE1F81220F00DA9F5E /* CDTextView.m in Sources */,
+				940616751A534876B677D81B /* CDCheckboxView.m in Sources */,
 				A7FC52C81F7FC7D800DA9F5E /* CDSliderView.m in Sources */,
 				A754FE4D1F89D115008F0BC3 /* CDUsage.m in Sources */,
 				A74A1C331F864DE4006289A8 /* CDTemplate.m in Sources */,

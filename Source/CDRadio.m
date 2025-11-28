@@ -30,80 +30,131 @@
 }
 
 - (void) controlHasFinished:(NSUInteger)button {
-    if (self.matrix.cells != nil && self.matrix.cells.count) {
-        NSCell *selectedCell = self.matrix.selectedCell;
-        if (selectedCell != nil) {
-            if (self.options[@"return-labels"].wasProvided) {
-                self.returnValues[@"value"] = selectedCell.title;
-            }
-            else {
-                self.returnValues[@"value"] = [NSNumber numberWithInteger:self.matrix.selectedCell.tag];
-            }
+    // Find the selected radio button
+    NSButton *selectedButton = nil;
+    for (NSButton *radio in self.radios) {
+        if (radio.state == NSControlStateValueOn) {
+            selectedButton = radio;
+            break;
+        }
+    }
+    
+    if (selectedButton != nil) {
+        if (self.options[@"return-labels"].wasProvided) {
+            self.returnValues[@"value"] = selectedButton.title;
         }
         else {
-            self.returnValues[@"value"] = @-1;
+            self.returnValues[@"value"] = [NSNumber numberWithInteger:selectedButton.tag];
         }
     }
     else {
         self.returnValues[@"value"] = @-1;
     }
+    
     [super controlHasFinished:button];
 }
 
 - (void) createControl {
-    [super createControl];
+    // Set properties first
     self.items = self.options[@"items"].arrayValue ?: [NSArray array];
     self.mixed = self.options[@"mixed"].arrayValue ?: [NSArray array];
     self.disabled = self.options[@"disabled"].arrayValue ?: [NSArray array];
+    
+    // Call super to set up the basic dialog
+    [super createControl];
 }
 
-- (void) initMatrix {
-    [super initMatrix];
-
-    NSUInteger i = 0;
-    float cellWidth = 0.0f;
-    for (NSString *item in self.items) {
-        NSButton *button = [[NSButton alloc] init];
-        [button setButtonType:NSButtonTypeRadio];
-        button.title = item;
-        if (self.disabled != nil && self.disabled.count) {
-            if ([self.disabled containsObject:[NSString stringWithFormat:@"%lu", i]]) {
-                [button.cell setEnabled: NO];
-            }
+- (void) createControlView {
+    // Create radio buttons programmatically
+    self.radios = [NSMutableArray array];
+    
+    NSView *containerView = [[NSView alloc] init];
+    containerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.controlView addSubview:containerView];
+    
+    // Pin container to controlView
+    [containerView.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
+    [containerView.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor].active = YES;
+    [containerView.topAnchor constraintEqualToAnchor:self.controlView.topAnchor].active = YES;
+    [containerView.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor].active = YES;
+    
+    // Create a radio button for each item
+    NSView *previousRadio = nil;
+    NSUInteger selectedIndex = self.options[@"selected"].wasProvided ? self.options[@"selected"].unsignedIntValue : NSNotFound;
+    
+    for (NSUInteger i = 0; i < self.items.count; i++) {
+        NSButton *radio = [[NSButton alloc] init];
+        radio.buttonType = NSButtonTypeRadio;
+        radio.title = self.items[i];
+        radio.tag = i;
+        radio.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        // Set target and action to handle radio button grouping
+        radio.target = self;
+        radio.action = @selector(radioButtonClicked:);
+        
+        // Set initial state
+        if (i == selectedIndex) {
+            radio.state = NSControlStateValueOn;
         }
-        button.cell.tag = i;
-        [button sizeToFit];
-        if (button.frame.size.width > cellWidth) {
-            cellWidth = button.frame.size.width;
+        if ([self.disabled containsObject:[NSString stringWithFormat:@"%lu", i]]) {
+            radio.enabled = NO;
         }
-        [self.cells addObject:button.cell];
-        i++;
+        
+        [containerView addSubview:radio];
+        [self.radios addObject:radio];
+        
+        // Position constraints
+        [radio.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor constant:20].active = YES;
+        [radio.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:-20].active = YES;
+        
+        if (previousRadio == nil) {
+            // First radio - pin to top
+            [radio.topAnchor constraintEqualToAnchor:containerView.topAnchor constant:10].active = YES;
+        } else {
+            // Subsequent radios - stack below previous
+            [radio.topAnchor constraintEqualToAnchor:previousRadio.bottomAnchor constant:8].active = YES;
+        }
+        
+        // Last radio pins to bottom
+        if (i == self.items.count - 1) {
+            [radio.bottomAnchor constraintEqualToAnchor:containerView.bottomAnchor constant:-10].active = YES;
+        }
+        
+        previousRadio = radio;
     }
-
-    // Set other attributes of matrix
-    [self.matrix setAutosizesCells:NO];
-    self.matrix.cellSize = NSMakeSize(cellWidth, 18.0f);
-    [self.matrix setAllowsEmptySelection:YES];
-    self.matrix.mode = NSRadioModeMatrix;
+    
+    // Set minimum width
+    [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:300].active = YES;
 }
 
-- (BOOL) isCellSelected:(NSUInteger)index {
-    return self.options[@"selected"].wasProvided ? self.options[@"selected"].unsignedIntValue == index : NO;
+- (void) radioButtonClicked:(NSButton *)sender {
+    // Deselect all other radio buttons when one is clicked
+    for (NSButton *radio in self.radios) {
+        if (radio != sender) {
+            radio.state = NSControlStateValueOff;
+        }
+    }
+    // Ensure the clicked one is selected
+    sender.state = NSControlStateValueOn;
 }
 
 - (BOOL) isReturnValueEmpty {
-    if (self.matrix.cells == nil || !self.matrix.cells.count || self.matrix.selectedCell != nil) {
-        return NO;
+    // Check if any radio is selected
+    for (NSButton *radio in self.radios) {
+        if (radio.state == NSControlStateValueOn) {
+            return NO;
+        }
     }
     return YES;
 }
 
 - (NSString *) returnValueEmptyText {
-    if (self.matrix.cells.count > 1) {
+    if (self.items.count > 1) {
         return @"You must select at least one item before continuing.";
     }
     else {
-        return [NSString stringWithFormat: @"You must select the item \"%@\" before continuing.", [self.matrix cellAtRow:0 column:0].title];
+        return [NSString stringWithFormat: @"You must select the item \"%@\" before continuing.", self.items[0]];
     }
 }
 
