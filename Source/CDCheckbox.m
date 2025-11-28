@@ -6,6 +6,7 @@
 // Licensed under GPL-2.
 
 #import "CDCheckbox.h"
+#import "CDCheckboxView.h"
 
 @implementation CDCheckbox
 
@@ -29,71 +30,76 @@
 }
 
 - (void) createControl {
-    [super createControl];
-
+    // Set properties first
     self.checked = self.options[@"checked"].arrayValue ?: [NSArray array];
     self.items = self.options[@"items"].arrayValue ?: [NSArray array];
     self.mixed = self.options[@"mixed"].arrayValue ?: [NSArray array];
     self.disabled = self.options[@"disabled"].arrayValue ?: [NSArray array];
     
-    // set return values
-    NSArray * cells = self.matrix.cells;
-    NSMutableArray *tmpValues = [NSMutableArray array];
-    NSEnumerator *en = [cells objectEnumerator];
-    id obj;
-    while (obj = [en nextObject]) {
-        if ([[obj className] isEqualToString:@"NSButtonCell"]) {
-            [tmpValues addObject:obj];
-        } 
-    }
-    self.checkboxes = [NSMutableArray arrayWithArray:tmpValues];
-    en = [tmpValues objectEnumerator];
-    while (obj = [en nextObject]) {
-        self.checkboxes[[obj tag]] = obj;
-    }
+    // Call super to set up the basic dialog
+    [super createControl];
 }
 
-- (void) initMatrix {
-    [super initMatrix];
-
-    // Create the control for each item
-    NSUInteger currItem = 0;
-    NSEnumerator *en = [self.items objectEnumerator];
-    float cellWidth = 0.0;
-    id obj;
-    while (obj = [en nextObject]) {
-        NSButton * button = [[NSButton alloc] init];
-        [button setButtonType:NSButtonTypeSwitch];
-        button.title = self.items[currItem];
-        if (self.checked.count) {
-            if ([self.checked containsObject:[NSString stringWithFormat:@"%lu", currItem]]) {
-                button.cell.state = NSControlStateValueOn;
-            }
+- (void) createControlView {
+    // Create checkboxes programmatically instead of using NSMatrix
+    self.checkboxes = [NSMutableArray array];
+    
+    NSView *containerView = [[NSView alloc] init];
+    containerView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.controlView addSubview:containerView];
+    
+    // Pin container to controlView
+    [containerView.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
+    [containerView.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor].active = YES;
+    [containerView.topAnchor constraintEqualToAnchor:self.controlView.topAnchor].active = YES;
+    [containerView.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor].active = YES;
+    
+    // Create a checkbox for each item
+    NSView *previousCheckbox = nil;
+    for (NSUInteger i = 0; i < self.items.count; i++) {
+        NSButton *checkbox = [[NSButton alloc] init];
+        checkbox.buttonType = NSButtonTypeSwitch;
+        checkbox.title = self.items[i];
+        checkbox.tag = i;
+        checkbox.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        // Set initial state
+        if ([self.checked containsObject:[NSString stringWithFormat:@"%lu", i]]) {
+            checkbox.state = NSControlStateValueOn;
         }
-        if (self.mixed.count) {
-            if ([self.mixed containsObject:[NSString stringWithFormat:@"%lu", currItem]]) {
-                [button.cell setAllowsMixedState:YES];
-                button.cell.state = NSControlStateValueMixed;
-            }
+        if ([self.mixed containsObject:[NSString stringWithFormat:@"%lu", i]]) {
+            checkbox.allowsMixedState = YES;
+            checkbox.state = NSControlStateValueMixed;
         }
-        if (self.disabled.count) {
-            if ([self.disabled containsObject:[NSString stringWithFormat:@"%lu", currItem]]) {
-                [button.cell setEnabled: NO];
-            }
+        if ([self.disabled containsObject:[NSString stringWithFormat:@"%lu", i]]) {
+            checkbox.enabled = NO;
         }
-        button.cell.tag = currItem;
-        [button sizeToFit];
-        if (button.frame.size.width > cellWidth) {
-            cellWidth = button.frame.size.width;
+        
+        [containerView addSubview:checkbox];
+        [self.checkboxes addObject:checkbox];
+        
+        // Position constraints
+        [checkbox.leadingAnchor constraintEqualToAnchor:containerView.leadingAnchor constant:20].active = YES;
+        [checkbox.trailingAnchor constraintLessThanOrEqualToAnchor:containerView.trailingAnchor constant:-20].active = YES;
+        
+        if (previousCheckbox == nil) {
+            // First checkbox - pin to top
+            [checkbox.topAnchor constraintEqualToAnchor:containerView.topAnchor constant:10].active = YES;
+        } else {
+            // Subsequent checkboxes - stack below previous
+            [checkbox.topAnchor constraintEqualToAnchor:previousCheckbox.bottomAnchor constant:8].active = YES;
         }
-        [self.cells addObject:button.cell];
-        currItem++;
+        
+        // Last checkbox pins to bottom
+        if (i == self.items.count - 1) {
+            [checkbox.bottomAnchor constraintEqualToAnchor:containerView.bottomAnchor constant:-10].active = YES;
+        }
+        
+        previousCheckbox = checkbox;
     }
-
-    // Set other attributes of matrix
-    [self.matrix setAutosizesCells:NO];
-    self.matrix.cellSize = NSMakeSize(cellWidth, 18.0f);
-    self.matrix.mode = NSHighlightModeMatrix;
+    
+    // Set minimum width
+    [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:300].active = YES;
 }
 
 

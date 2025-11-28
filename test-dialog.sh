@@ -50,25 +50,14 @@ case "$1" in
             --button1 "Submit" --button2 "Cancel"
         ;;
     "progressbar")
-        echo "Testing indeterminate progress..."
-        "$CD" progressbar --title "Processing" --text "Please wait..." --indeterminate --stoppable &
-        PID=$!
-        sleep 3
-        kill $PID 2>/dev/null
-        
-        echo ""
-        echo "Testing progress with percentage..."
+        echo "Testing progress with percentage (click Stop to cancel)..."
         (
-            echo "0 Starting..."
-            sleep 1
-            echo "25 Processing files..."
-            sleep 1
-            echo "50 Half done..."
-            sleep 1
-            echo "75 Almost there..."
-            sleep 1
-            echo "100 Complete!"
-        ) | "$CD" progressbar --title "Progress" --text "Working..." --stoppable
+            for i in 0 10 20 30 40 50 60 70 80 90 100; do
+                echo "$i Processing step $((i/10))..."
+                sleep 0.5
+            done
+        ) | "$CD" progressbar --title "Progress Test" --text "Working..." --stoppable
+        echo "Exit code: $?"
         ;;
     "fileselect")
         "$CD" fileselect --title "Choose a File" \
@@ -80,8 +69,22 @@ case "$1" in
             --with-file "untitled.txt" \
             --button1 "Save"
         ;;
+    "checkbox")
+        "$CD" checkbox --title "Select Options" \
+            --text "Choose all that apply:" \
+            --items "Email notifications" "SMS alerts" "Push notifications" "Newsletter" \
+            --checked 0 2 \
+            --button1 "Save" --button2 "Cancel"
+        ;;
+    "radio")
+        "$CD" radio --title "Choose One" \
+            --text "Select your preferred contact method:" \
+            --items "Email" "Phone" "Text Message" "Postal Mail" \
+            --selected 0 \
+            --button1 "Continue" --button2 "Cancel"
+        ;;
     *)
-        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave}"
+        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave|checkbox|radio}"
         echo ""
         echo "  simple      - Simple msgbox test"
         echo "  long        - Long text wrapping test"
@@ -92,8 +95,9 @@ case "$1" in
         echo "  progressbar - Progress indicator test"
         echo "  fileselect  - File selection dialog"
         echo "  filesave    - Save file dialog"
+        echo "  checkbox    - Multiple selection checkboxes"
+        echo "  radio       - Exclusive selection radio buttons"
         echo ""
-        echo "Note: checkbox and radio dialogs require matrix NIB support (not currently available)"
         exit 1
         ;;
 esac

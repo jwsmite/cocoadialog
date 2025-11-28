@@ -7,9 +7,9 @@
 
 @class CDRadio;
 
-#import "CDMatrix.h"
+#import "CDDialog.h"
 
-@interface CDRadio : CDMatrix
+@interface CDRadio : CDDialog
 
 # pragma mark - Properties
 @property (strong)                   NSArray                 *disabled;

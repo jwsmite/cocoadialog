@@ -7,9 +7,9 @@
 
 @class CDCheckbox;
 
-#import "CDMatrix.h"
+#import "CDDialog.h"
 
-@interface CDCheckbox : CDMatrix
+@interface CDCheckbox : CDDialog
 
 @property (strong)                   NSMutableArray          *checkboxes;
 @property (strong)                   NSArray                 *checked;

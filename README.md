@@ -285,8 +285,8 @@ value: <data>
 | `inputbox`    | Single-line text input                       |
 | `form`        | Multi-field input form                       |
 | `dropdown`    | Dropdown/popup menu selection                |
-| `checkbox`    | Multiple selection checkboxes - NOT WORKING  |
-| `radio`       | Single selection radio buttons - NOT WORKING |
+| `checkbox`    | Multiple selection checkboxes                |
+| `radio`       | Single selection radio buttons               |
 | `fileselect`  | File/folder picker                           |
 | `filesave`    | Save file dialog                             |
 | `textbox`     | Multi-line text input                        |
