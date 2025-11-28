@@ -50,25 +50,14 @@ case "$1" in
             --button1 "Submit" --button2 "Cancel"
         ;;
     "progressbar")
-        echo "Testing indeterminate progress..."
-        "$CD" progressbar --title "Processing" --text "Please wait..." --indeterminate --stoppable &
-        PID=$!
-        sleep 3
-        kill $PID 2>/dev/null
-        
-        echo ""
-        echo "Testing progress with percentage..."
+        echo "Testing progress with percentage (click Stop to cancel)..."
         (
-            echo "0 Starting..."
-            sleep 1
-            echo "25 Processing files..."
-            sleep 1
-            echo "50 Half done..."
-            sleep 1
-            echo "75 Almost there..."
-            sleep 1
-            echo "100 Complete!"
-        ) | "$CD" progressbar --title "Progress" --text "Working..." --stoppable
+            for i in 0 10 20 30 40 50 60 70 80 90 100; do
+                echo "$i Processing step $((i/10))..."
+                sleep 0.5
+            done
+        ) | "$CD" progressbar --title "Progress Test" --text "Working..." --stoppable
+        echo "Exit code: $?"
         ;;
     "fileselect")
         "$CD" fileselect --title "Choose a File" \

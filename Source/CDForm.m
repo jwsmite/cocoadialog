@@ -51,43 +51,9 @@
     [self stopControl];
 }
 
-- (void) createControl {
-    [super createControl];
-    
-    // After the control is created, adjust the panel height to fit all fields
-    NSArray *labelTexts = self.options[@"label"].arrayValue;
-    if (labelTexts && labelTexts.count > 0) {
-        CGFloat fieldHeight = 22;
-        CGFloat labelHeight = 17;
-        CGFloat spacing = 8;
-        CGFloat topPadding = 10;
-        CGFloat bottomPadding = 10;
-        
-        // Calculate total height needed for all form fields
-        CGFloat formHeight = topPadding + 
-                            (labelTexts.count * (labelHeight + 4 + fieldHeight + spacing)) + 
-                            bottomPadding;
-        
-        // Get current panel size
-        NSSize currentSize = self.panel.frame.size;
-        
-        // Calculate additional height needed
-        // Base dialog has header, message, buttons (roughly 150-200pt)
-        CGFloat minDialogHeight = 180;  // Minimum for header/buttons/margins
-        CGFloat desiredHeight = minDialogHeight + formHeight;
-        
-        // Only resize if we need more space
-        if (desiredHeight > currentSize.height) {
-            NSRect frame = self.panel.frame;
-            CGFloat heightDiff = desiredHeight - frame.size.height;
-            frame.size.height = desiredHeight;
-            frame.origin.y -= heightDiff;  // Adjust Y to keep top-left position
-            [self.panel setFrame:frame display:YES animate:NO];
-        }
-    }
-}
-
 - (void) createControlView {
+    [super createControlView];
+    
     // Initialize arrays
     self.textFields = [NSMutableArray array];
     self.labels = [NSMutableArray array];
@@ -105,6 +71,20 @@
     CGFloat labelHeight = 17;
     CGFloat spacing = 8;
     CGFloat topPadding = 10;
+    
+    // Calculate total form height upfront
+    CGFloat totalFormHeight = topPadding + 
+                             (labelTexts.count * (labelHeight + 4 + fieldHeight + spacing)) + 
+                             10; // bottom padding
+    
+    // Set the controlView height constraint BEFORE creating subviews
+    // This ensures getViewHeight returns the correct value
+    for (NSLayoutConstraint *constraint in self.controlView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            constraint.constant = totalFormHeight;
+            break;
+        }
+    }
     
     NSView *previousView = nil;
     
