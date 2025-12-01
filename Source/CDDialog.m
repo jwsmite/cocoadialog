@@ -130,6 +130,33 @@
         [self.panel removeSubview:self.controlView movingAttribute:NSLayoutAttributeTop to:self.timeoutLabel];
     }
     
+    // Set up horizontal fill constraints for header and message
+    // This must happen AFTER createControlView has added subviews
+    if (!self.header.hidden) {
+        self.header.translatesAutoresizingMaskIntoConstraints = NO;
+        if (self.controlView.subviews.count > 0) {
+            NSView *inputbox = self.controlView.subviews[0];
+            [self.header.widthAnchor constraintEqualToAnchor:inputbox.widthAnchor].active = YES;
+            [self.header.centerXAnchor constraintEqualToAnchor:inputbox.centerXAnchor].active = YES;
+        } else {
+            [self.header.widthAnchor constraintEqualToConstant:300].active = YES;
+            [self.header.centerXAnchor constraintEqualToAnchor:self.panel.contentView.centerXAnchor].active = YES;
+        }
+        [self.header.heightAnchor constraintGreaterThanOrEqualToConstant:22].active = YES;
+    }
+    
+    if (!self.message.hidden) {
+        self.message.translatesAutoresizingMaskIntoConstraints = NO;
+        if (self.controlView.subviews.count > 0) {
+            NSView *inputbox = self.controlView.subviews[0];
+            [self.message.widthAnchor constraintEqualToAnchor:inputbox.widthAnchor].active = YES;
+            [self.message.centerXAnchor constraintEqualToAnchor:inputbox.centerXAnchor].active = YES;
+        } else {
+            [self.message.widthAnchor constraintEqualToConstant:300].active = YES;
+            [self.message.centerXAnchor constraintEqualToAnchor:self.panel.contentView.centerXAnchor].active = YES;
+        }
+        [self.message.heightAnchor constraintGreaterThanOrEqualToConstant:22].active = YES;
+    }
 
     if (self.button0.hidden && self.button1.hidden && self.button2.hidden) {
 //        [self.panel.contentView removeConstraints:[self.panel getConstraintsForView:self.timeoutLabel withAttribute:NSLayoutAttributeBottom]];
