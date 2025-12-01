@@ -59,8 +59,8 @@
     
     // Set constraints for proper layout
     self.input.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.input.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor constant:0].active = YES;
-    [self.input.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor constant:0].active = YES;
+    [self.input.centerXAnchor constraintEqualToAnchor:self.controlView.centerXAnchor].active = YES;
+    [self.input.widthAnchor constraintEqualToConstant:300].active = YES;
     [self.input.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:0].active = YES;
     [self.input.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor constant:0].active = YES;
     
