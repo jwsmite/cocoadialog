@@ -109,9 +109,9 @@
         [self.controlView addSubview:label];
         
         // Label constraints - CHANGED: Use fixed width instead of trailing anchor
-        [label.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
-        [label.widthAnchor constraintEqualToConstant:350].active = YES;  // ← CHANGED
-        [label.heightAnchor constraintEqualToConstant:labelHeight].active = YES;
+            [label.centerXAnchor constraintEqualToAnchor:self.controlView.centerXAnchor].active = YES;
+            [label.widthAnchor constraintEqualToConstant:350].active = YES;
+            [label.heightAnchor constraintEqualToConstant:labelHeight].active = YES;
         
         if (previousView == nil) {
             [label.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:topPadding].active = YES;
@@ -156,10 +156,10 @@
         [self.controlView addSubview:textField];
         
         // Text field constraints - CHANGED: Use fixed width instead of trailing anchor
-        [textField.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor].active = YES;
-        [textField.widthAnchor constraintEqualToConstant:350].active = YES;  // ← CHANGED
-        [textField.heightAnchor constraintEqualToConstant:fieldHeight].active = YES;
-        [textField.topAnchor constraintEqualToAnchor:label.bottomAnchor constant:4].active = YES;
+            [textField.centerXAnchor constraintEqualToAnchor:self.controlView.centerXAnchor].active = YES;
+            [textField.widthAnchor constraintEqualToConstant:350].active = YES;
+            [textField.heightAnchor constraintEqualToConstant:fieldHeight].active = YES;
+            [textField.topAnchor constraintEqualToAnchor:label.bottomAnchor constant:4].active = YES;
         
         previousView = textField;
     }
