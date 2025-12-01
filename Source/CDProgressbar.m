@@ -40,9 +40,14 @@
 
     // Set text label.
     self.labels = self.options[@"labels"].arrayValue ?: [NSArray array];
+    self.progressbar.labels = self.labels;
 
     // Set whether progressbar is stoppable.
     self.progressbar.stoppable = self.options[@"stoppable"].boolValue;
+    
+    // Connect stop button action
+    [self.progressbar.stopButton setTarget:self];
+    [self.progressbar.stopButton setAction:@selector(stop:)];
 
     CDProgressbarInputHandler *inputHandler = [[CDProgressbarInputHandler alloc] init];
     [inputHandler setDelegate:self];
@@ -93,6 +98,30 @@
     if (data[@"labels"] != nil) {
         self.progressbar.labels = data[@"labels"];
     }
+}
+
+# pragma mark - CDProgressbarInputHandler delegate methods
+
+- (void) updateProgress:(NSNumber *)progress {
+    self.progressbar.value = progress.doubleValue;
+}
+
+- (void) updateLabel:(NSString *)label {
+    NSMutableArray *labels = [NSMutableArray arrayWithArray:self.labels];
+    if (labels.count == 0) {
+        [labels addObject:label];
+    } else {
+        labels[0] = label;
+    }
+    self.progressbar.labels = labels;
+}
+
+- (void) setStopEnabled:(NSNumber *)enabled {
+    self.progressbar.stopButton.enabled = enabled.boolValue;
+}
+
+- (void) finish {
+    [self progressFinished];
 }
 
 - (IBAction) stop:(id)sender {

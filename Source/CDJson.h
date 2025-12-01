@@ -1,4 +1,5 @@
 // CDJson.h
+#import <Foundation/Foundation.h>
 // cocoadialog
 //
 // Copyright (c) 2004-2017 Mark A. Stratman <mark@sporkstorms.org>, Mark Carver <mark.carver@me.com>.
