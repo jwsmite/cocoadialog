@@ -52,6 +52,9 @@
 @property (strong)       IBOutlet    CDTextField             *message;
 - (void) createMessage;
 
+// Expose setLabel:withText: for subclasses
+- (void)setLabel:(CDTextField *)label withText:(NSString *)text;
+
 #pragma mark - Panel
 @property (readonly)                 NSSize                  findNewSize;
 @property (retain)       IBOutlet    NSPanel                 *panel;
