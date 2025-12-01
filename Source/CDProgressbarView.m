@@ -15,9 +15,26 @@
 
 - (void) setLabels:(NSArray <NSString *> *)labels {
     _labels = labels;
-//    NSString *primaryLabel = labels[0] ?: nil;
-//    NSString *secondaryLabel = labels[0] ?: nil;
-//
+    if (labels.count > 0 && labels[0].length > 0) {
+        self.primaryLabel.stringValue = labels[0];
+        self.primaryLabel.hidden = NO;
+    } else {
+        self.primaryLabel.stringValue = @"";
+        self.primaryLabel.hidden = YES;
+    }
+    
+    if (labels.count > 1 && labels[1].length > 0) {
+        self.secondaryLabel.stringValue = labels[1];
+        self.secondaryLabel.hidden = NO;
+    } else {
+        self.secondaryLabel.stringValue = @"";
+        self.secondaryLabel.hidden = YES;
+    }
+}
+
+- (void) setValue:(double)value {
+    _value = value;
+    self.progressbar.doubleValue = value;
 }
 
 - (void) setIndeterminate:(BOOL)indeterminate {
