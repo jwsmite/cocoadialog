@@ -136,8 +136,9 @@
         self.header.translatesAutoresizingMaskIntoConstraints = NO;
         if (self.controlView.subviews.count > 0) {
             NSView *inputbox = self.controlView.subviews[0];
-            [self.header.widthAnchor constraintEqualToAnchor:inputbox.widthAnchor].active = YES;
-            [self.header.centerXAnchor constraintEqualToAnchor:inputbox.centerXAnchor].active = YES;
+            // Use leading/trailing constraints with proper margins instead of centering
+            [self.header.leadingAnchor constraintEqualToAnchor:inputbox.leadingAnchor constant:20].active = YES;
+            [self.header.trailingAnchor constraintEqualToAnchor:inputbox.trailingAnchor constant:-20].active = YES;
         } else {
             [self.header.widthAnchor constraintEqualToConstant:300].active = YES;
             [self.header.centerXAnchor constraintEqualToAnchor:self.panel.contentView.centerXAnchor].active = YES;
@@ -149,8 +150,9 @@
         self.message.translatesAutoresizingMaskIntoConstraints = NO;
         if (self.controlView.subviews.count > 0) {
             NSView *inputbox = self.controlView.subviews[0];
-            [self.message.widthAnchor constraintEqualToAnchor:inputbox.widthAnchor].active = YES;
-            [self.message.centerXAnchor constraintEqualToAnchor:inputbox.centerXAnchor].active = YES;
+            // Use leading/trailing constraints with proper margins instead of centering
+            [self.message.leadingAnchor constraintEqualToAnchor:inputbox.leadingAnchor constant:20].active = YES;
+            [self.message.trailingAnchor constraintEqualToAnchor:inputbox.trailingAnchor constant:-20].active = YES;
         } else {
             [self.message.widthAnchor constraintEqualToConstant:300].active = YES;
             [self.message.centerXAnchor constraintEqualToAnchor:self.panel.contentView.centerXAnchor].active = YES;

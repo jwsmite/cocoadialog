@@ -57,16 +57,16 @@
     // Add it to the control view
     [self.controlView addSubview:self.input];
     
-    // Set constraints for proper layout
+    // Set constraints for proper layout with 20pt left/right padding
     self.input.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.input.centerXAnchor constraintEqualToAnchor:self.controlView.centerXAnchor].active = YES;
-    [self.input.widthAnchor constraintEqualToConstant:300].active = YES;
+    [self.input.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor constant:20].active = YES;
+    [self.input.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor constant:-20].active = YES;
     [self.input.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:0].active = YES;
     [self.input.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor constant:0].active = YES;
     
     // Set minimum size for the control view itself
     [self.controlView.heightAnchor constraintGreaterThanOrEqualToConstant:22].active = YES;
-    [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:300].active = YES;  // Add width constraint
+    [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:340].active = YES;  // 300 + 40 for padding
 }
 
 - (void) controlHasFinished:(NSUInteger)button {
