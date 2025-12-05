@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Test script for cocoadialog
-CD="/Users/jsmit/Library/Developer/Xcode/DerivedData/cocoadialog-gwwrlwshqpyalnezjzpgoegcvgem/Build/Products/Release/cocoadialog.app/Contents/MacOS/cocoadialog"
+CD="/Users/jsmit/Library/Developer/Xcode/DerivedData/cocoadialog-gwwrlwshqpyalnezjzpgoegcvgem/Build/Products/Release/cocoaDialog.app/Contents/MacOS/cocoaDialog"
 
 if [ ! -f "$CD" ]; then
-    echo "ERROR: cocoadialog not found at:"
+    echo "ERROR: cocoaDialog not found at:"
     echo "$CD"
     echo ""
     echo "Please build the project in Xcode first."
