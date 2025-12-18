@@ -27,6 +27,7 @@ case "$1" in
             --message "Complete this form" \
             --label "Full Name:" --label "Email:" --label "Phone:" --label "Address:" \
             --label "City:" --label "State:" --label "Zip:" --label "Country:" \
+            --label "Secret Code:" \
             --button1 "Submit" --button2 "Cancel"
         ;;
     "dropdown")
@@ -83,8 +84,15 @@ case "$1" in
             --selected 0 \
             --button1 "Continue" --button2 "Cancel"
         ;;
+    "legacy")
+        echo "Testing legacy standard-inputbox format with default value..."
+        "$CD" standard-inputbox --title "Dolby SET - Test App" \
+            --height 150 \
+            --informative-text "Please enter gain value to be applied (dB or factor):" \
+            --text "-3dB"
+        ;;
     *)
-        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave|checkbox|radio}"
+        echo "Usage: $0 {simple|long|form|dropdown|slider|textbox|progressbar|fileselect|filesave|checkbox|radio|legacy}"
         echo ""
         echo "  simple      - Simple msgbox test"
         echo "  long        - Long text wrapping test"
@@ -97,6 +105,7 @@ case "$1" in
         echo "  filesave    - Save file dialog"
         echo "  checkbox    - Multiple selection checkboxes"
         echo "  radio       - Exclusive selection radio buttons"
+        echo "  legacy      - Legacy standard-inputbox format test"
         echo ""
         exit 1
         ;;
