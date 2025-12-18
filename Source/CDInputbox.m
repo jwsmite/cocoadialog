@@ -23,6 +23,7 @@
   @[
     CDOption.create(CDBoolean,  @"secure").deprecates(@[CDOption.create(CDBoolean, @"no-show")]),
     CDOption.create(CDBoolean,  @"selected").deprecates(@[CDOption.create(CDBoolean, @"not-selected")]),
+    // For inputbox, --text maps to the default input value
     CDOption.create(CDString,   @"value").deprecates(@[CDOption.create(CDString, @"text")]),
     ]);
 }
@@ -46,17 +47,29 @@
     
     self.input.refusesFirstResponder = NO;
 
-    // Set initial text in textfield.
-    [self.input setStringValue:self.options[@"value"].stringValue];
+   // Get default value
+    NSString *defaultValue = self.options[@"value"].stringValue;
 
-    // Select all the text.
+    // Legacy compatibility
+    if ((defaultValue == nil || defaultValue.length == 0) && 
+        self.options[@"header"].wasProvided && 
+        !self.options[@"value"].wasProvided) {
+        defaultValue = self.options[@"header"].stringValue;
+    }
+
+    if (defaultValue == nil || defaultValue.length == 0) {
+        defaultValue = @"";
+    }
+    [self.input setStringValue:defaultValue];
+
+    // Select all the text if requested
     if (self.options[@"selected"].wasProvided || self.options[@"selected"].boolValue) {
         [self.input selectAll:nil];
     }
-    
+
     // Add it to the control view
     [self.controlView addSubview:self.input];
-    
+
     // Set constraints for proper layout with 20pt left/right padding
     self.input.translatesAutoresizingMaskIntoConstraints = NO;
     [self.input.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor constant:20].active = YES;
@@ -69,9 +82,42 @@
     [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:340].active = YES;  // 300 + 40 for padding
 }
 
+- (void) createHeader {
+    // Check if this is legacy format (--text used for input value, not header)
+    NSString *headerText = self.options[@"header"].stringValue;
+    BOOL isLegacyFormat = (headerText != nil && headerText.length > 0 && 
+                           !self.options[@"value"].wasProvided && 
+                           self.options[@"header"].wasProvided);
+    
+    if (isLegacyFormat) {
+        // Don't create header - the text will be used as input default value
+        self.header.hidden = YES;
+        return;
+    }
+    
+    // Normal header creation
+    [super createHeader];
+}
+
 - (void) controlHasFinished:(NSUInteger)button {
-    self.returnValues[@"value"] = self.input.stringValue;
-    [super controlHasFinished:button];
+    // Check for cancel
+    if (self.cancelButton && button == self.cancelButton.unsignedIntegerValue) {
+        self.exitStatus = CDTerminalExitCodeCancel;
+    }
+    else {
+        if (![self allowEmptyReturn] && [self isReturnValueEmpty]) {
+            [self returnValueEmptySheet];
+            return;
+        }
+    }
+    
+    // Output directly to terminal in simple format (no "value: " prefix)
+    // This maintains backward compatibility with original cocoaDialog
+    [self.terminal writeLine:[NSString stringWithFormat:@"%lu", (unsigned long)button]];
+    [self.terminal writeLine:self.input.stringValue ?: @""];
+    
+    // Stop the control (skip parent's controlHasFinished to avoid double output)
+    [self stopControl];
 }
 
 @end
