@@ -193,13 +193,14 @@
         }
     }
 
-    // Warn about unknown options.
+    // Error on unknown options.
     NSArray *unknown = [self.control.options unknownOptions].sortedAlphabetically;
 
     if (unknown.count) {
         for (NSString *name in unknown) {
-            self.terminal.warning(NSLocalizedString(@"WARNING_UNKNOWN_OPTION".localized, nil), name.optionFormat, nil);
+            self.terminal.error(NSLocalizedString(@"WARNING_UNKNOWN_OPTION".localized, nil), name.optionFormat, nil);
         }
+        self.terminal.exit(CDTerminalExitCodeOptionInvalid);
     }
 
     // Warn if multiple value options don't specify argument breaks.

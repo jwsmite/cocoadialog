@@ -71,15 +71,26 @@
     [self.controlView addSubview:self.input];
 
     // Set constraints for proper layout with 20pt left/right padding
+    // Position input at top of controlView with padding
     self.input.translatesAutoresizingMaskIntoConstraints = NO;
     [self.input.leadingAnchor constraintEqualToAnchor:self.controlView.leadingAnchor constant:20].active = YES;
     [self.input.trailingAnchor constraintEqualToAnchor:self.controlView.trailingAnchor constant:-20].active = YES;
-    [self.input.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:0].active = YES;
-    [self.input.bottomAnchor constraintEqualToAnchor:self.controlView.bottomAnchor constant:0].active = YES;
+    [self.input.topAnchor constraintEqualToAnchor:self.controlView.topAnchor constant:12].active = YES;
     
-    // Set minimum size for the control view itself
-    [self.controlView.heightAnchor constraintGreaterThanOrEqualToConstant:22].active = YES;
-    [self.controlView.widthAnchor constraintGreaterThanOrEqualToConstant:340].active = YES;  // 300 + 40 for padding
+    // Set input field height (don't pin to bottom - let it float at top)
+    [self.input.heightAnchor constraintEqualToConstant:22].active = YES;
+    
+    // Remove the weak XIB height constraint and replace with our own
+    for (NSLayoutConstraint *constraint in self.controlView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            constraint.active = NO;
+        }
+    }
+    
+    // Set controlView height with high priority: input (22) + top padding (12) + bottom padding (40 for spacing from buttons)
+    NSLayoutConstraint *heightConstraint = [self.controlView.heightAnchor constraintEqualToConstant:74];
+    heightConstraint.priority = NSLayoutPriorityRequired;
+    heightConstraint.active = YES;
 }
 
 - (void) createHeader {
