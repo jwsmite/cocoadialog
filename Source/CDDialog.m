@@ -676,6 +676,11 @@
     [self.panel setFrameOrigin:NSMakePoint(left, top)];
     
     [self.panel makeKeyAndOrderFront:nil];
+
+    // Re-activate after ordering the window front so the app is key and buttons
+    // receive clicks immediately (needed on macOS 14+ where activateIgnoringOtherApps:
+    // is deprecated and no longer reliably brings LSUIElement apps to the front).
+    [self.app activateApp];
 }
 
 - (void) createTitle {
@@ -688,21 +693,21 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification object:self.panel];
     }
     else {
-        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskClosable;
+        self.panel.styleMask &= ~NSWindowStyleMaskClosable;
     }
 
     // Handle --titlebar-minimize option.
     BOOL minimize = self.options[@"titlebar-minimize"].boolValue;
     [self.panel standardWindowButton:NSWindowMiniaturizeButton].enabled = minimize;
     if (!minimize) {
-        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskMiniaturizable;
+        self.panel.styleMask &= ~NSWindowStyleMaskMiniaturizable;
     }
 
     // Handle --resize and && --titlebar-zoom options.
     BOOL resize = self.options[@"resize"].boolValue;
     [self.panel standardWindowButton:NSWindowZoomButton].enabled = resize && self.options[@"titlebar-zoom"].wasProvided;
     if (!resize) {
-        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskResizable;
+        self.panel.styleMask &= ~NSWindowStyleMaskResizable;
     }
 }
 

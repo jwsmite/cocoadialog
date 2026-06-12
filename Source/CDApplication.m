@@ -23,6 +23,20 @@
 @implementation CDApplication
 
 #pragma mark - Properties
+// activateIgnoringOtherApps: was deprecated in macOS 14. On macOS Tahoe (16) it no
+// longer brings an LSUIElement app to the front, leaving dialogs present but not
+// accepting clicks. Use the modern [NSApp activate] on 14+.
+- (void) activateApp {
+    if (@available(macOS 14.0, *)) {
+        [NSApp activate];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+#pragma clang diagnostic pop
+    }
+}
+
 - (NSString *) baseUrl {
     return @"https://github.com/jwsmite/cocoadialog";
 }
@@ -101,7 +115,7 @@
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
     // Immediately exit if we're testing.
     if (self.isTesting) {
-        [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+        [self activateApp];
         [NSApp run];
         exit(0);
     }
@@ -238,7 +252,7 @@
     // Because this application isn't going to be double-clicked, or
     // launched with the "open" command-line tool, it won't necessarily
     // come to the front automatically.
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [self activateApp];
 
     // Run the control.
     // The control is now responsible for terminating cocoadialog,
