@@ -23,11 +23,14 @@
 @implementation CDApplication
 
 #pragma mark - Properties
-// activateIgnoringOtherApps: was deprecated in macOS 14. On macOS Tahoe (16) it no
-// longer brings an LSUIElement app to the front, leaving dialogs present but not
-// accepting clicks. Use the modern [NSApp activate] on 14+.
+// On macOS 14+ (Tahoe), activateIgnoringOtherApps: is deprecated and [NSApp activate]
+// is silently ignored for LSUIElement (background) apps. The window becomes key so
+// keyboard shortcuts fire, but the app is never truly the active application, so
+// mouse clicks get routed to whatever other app is frontmost instead.
+// Temporarily switching to Regular activation policy forces full foreground status.
 - (void) activateApp {
     if (@available(macOS 14.0, *)) {
+        [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
         [NSApp activate];
     } else {
 #pragma clang diagnostic push

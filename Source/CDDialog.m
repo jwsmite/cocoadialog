@@ -200,8 +200,11 @@
         [NSThread detachNewThreadSelector:@selector(createTimer) toTarget:self withObject:nil];
     }
 
-    // Continue up the chain.
-    [super runControl];
+    // Run as a modal window rather than the regular event loop. Modal windows receive
+    // guaranteed exclusive mouse event delivery directly from the WindowServer, bypassing
+    // app-activation requirements. This is why the old cocoadialog used runModal and is
+    // the fix for buttons being unclickable on macOS Tahoe for LSUIElement apps.
+    [NSApp runModalForWindow:self.panel];
 }
 
 - (NSString *) debugConstraint:(NSLayoutConstraint *)constraint {
@@ -264,6 +267,10 @@
     if (self.timerThread != nil) {
         [self.timerThread cancel];
     }
+
+    // Stop the modal session started in runControl before handing off to super
+    // (which calls [NSApp stop:] — that stops the main run loop, not the modal one).
+    [NSApp stopModal];
 
     [super stopControl];
 }
