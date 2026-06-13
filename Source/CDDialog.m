@@ -200,8 +200,11 @@
         [NSThread detachNewThreadSelector:@selector(createTimer) toTarget:self withObject:nil];
     }
 
-    // Continue up the chain.
-    [super runControl];
+    // Run as a modal window rather than the regular event loop. Modal windows receive
+    // guaranteed exclusive mouse event delivery directly from the WindowServer, bypassing
+    // app-activation requirements. This is why the old cocoadialog used runModal and is
+    // the fix for buttons being unclickable on macOS Tahoe for LSUIElement apps.
+    [NSApp runModalForWindow:self.panel];
 }
 
 - (NSString *) debugConstraint:(NSLayoutConstraint *)constraint {
@@ -264,6 +267,10 @@
     if (self.timerThread != nil) {
         [self.timerThread cancel];
     }
+
+    // Stop the modal session started in runControl before handing off to super
+    // (which calls [NSApp stop:] — that stops the main run loop, not the modal one).
+    [NSApp stopModal];
 
     [super stopControl];
 }
@@ -676,6 +683,11 @@
     [self.panel setFrameOrigin:NSMakePoint(left, top)];
     
     [self.panel makeKeyAndOrderFront:nil];
+
+    // Re-activate after ordering the window front so the app is key and buttons
+    // receive clicks immediately (needed on macOS 14+ where activateIgnoringOtherApps:
+    // is deprecated and no longer reliably brings LSUIElement apps to the front).
+    [self.app activateApp];
 }
 
 - (void) createTitle {
@@ -688,21 +700,21 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillClose:) name:NSWindowWillCloseNotification object:self.panel];
     }
     else {
-        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskClosable;
+        self.panel.styleMask &= ~NSWindowStyleMaskClosable;
     }
 
     // Handle --titlebar-minimize option.
     BOOL minimize = self.options[@"titlebar-minimize"].boolValue;
     [self.panel standardWindowButton:NSWindowMiniaturizeButton].enabled = minimize;
     if (!minimize) {
-        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskMiniaturizable;
+        self.panel.styleMask &= ~NSWindowStyleMaskMiniaturizable;
     }
 
     // Handle --resize and && --titlebar-zoom options.
     BOOL resize = self.options[@"resize"].boolValue;
     [self.panel standardWindowButton:NSWindowZoomButton].enabled = resize && self.options[@"titlebar-zoom"].wasProvided;
     if (!resize) {
-        self.panel.styleMask = self.panel.styleMask^NSWindowStyleMaskResizable;
+        self.panel.styleMask &= ~NSWindowStyleMaskResizable;
     }
 }
 

@@ -46,6 +46,7 @@
 + (NSDictionary<NSString *, NSString *> *) removedControls;
 
 #pragma mark - Public instance methods
+- (void) activateApp;
 - (NSArray <CDControlAlias *> *)controlAliases;
 - (CDControlAlias *) getControlAliasFor:(NSString *)name;
 

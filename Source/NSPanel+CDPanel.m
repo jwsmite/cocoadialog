@@ -44,7 +44,7 @@
         self.effectView = view;
     }
     else {
-        self.styleMask = self.styleMask ^ NSWindowStyleMaskFullSizeContentView;
+        self.styleMask &= ~NSWindowStyleMaskFullSizeContentView;
         self.effectView = nil;
     }
 
